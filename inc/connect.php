@@ -67,32 +67,36 @@ class Connect
         $checkList = $response["content"];
 
         foreach ($checkList as $check) {
-        
-            $unixTime[] = substr($check,0,12);0
-            $alert = substr($check,13,strpos($check,":"));
-            
+
+            $unixTime[] = substr($check,0,12);
+            $alert = substr($check,13,strpos($check,":")-13);
+
             //Parsing for service alerts
             if ($alert == "SERVICE ALERT") {
-            
+
                 $hostSplit = strpos($check,";");
                 $hostEnd = strpos($check,";",$hostSplit+1);
-                $host = substr($check,strpos($check,":")+2,$hostSplit-strpos($check,":")+2);
-                $host = $host.substr($check,$hostSplit+1,$hostEnd-$hostSplit+1;
-                
-                $flag = substr($check,$hostEnd+1,strpos($check,";",$hostEnd+1)-$hostEnd+1);
-                
-                echo $host." - ".$flag;
-            
+                $host = substr($check,strpos($check,":")+2,$hostSplit-strpos($check,":")-2);
+                $host = $host."|".substr($check,$hostSplit+1,$hostEnd-$hostSplit-1);
+
+                $flag = substr($check,$hostEnd+1,strpos($check,";",$hostEnd+1)-$hostEnd-1);
+
+                $message = substr($check,strripos($check,";")+1);
+
+                if ($flag != "OK") {
+                    echo $host." - ".$flag." - ".$message."\n";
+                }
+
             }
-            
+
             //External commands have an additional sub-parameter
             if ($alert == "EXTERNAL COMMAND") {
-            
+
             }
-        
+
         }
-        
-    
+
+    return $errors;
     }
-    
+
 }
