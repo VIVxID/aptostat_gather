@@ -83,5 +83,5 @@ class Connect
         }
     return $errors;
     }
+    
 }
-
