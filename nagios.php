@@ -7,7 +7,7 @@ require "inc/connect.php";
 require "inc/mutex.php";
 
 $con = new Connect_Ping();
-$mutex = new Mutex("pingdom");
+$mutex = new Mutex("nagios");
 
 $mutex->lock();
 
@@ -15,11 +15,7 @@ $mutex->lock();
 //Connect and retrieve from Pingdom.
 //
 
-$login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
-
-$result = $con->ping_fetch($login[0],$login[1],$login[2]);
-
-Log::writeReport("pingdom",$result);
+$result = $con->nag_fetch();
 
 //DATA MANIPULATION GOES HERE.
 
