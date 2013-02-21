@@ -33,6 +33,9 @@ abstract class Log
             
             } else {
             
+                $checkDate = explode(".",substr($reportFile[$search],0,17));
+                $makeDate = mktime($checkDate[3],$checkDate[4],$checkDate[5],$checkDate[1],$checkDate[2],$checkDate[0]);
+            
                 if ($makeDate < ($report["lasterrortime"] - 900)) {
 
                     //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
