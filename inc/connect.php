@@ -20,7 +20,7 @@ class Connect
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_USERPWD => "$user:$pass",
             CURLOPT_HTTPHEADER => array("App-Key: $key"),
-            CURLOPT_RETURNTRANSFER => TRUE
+            CURLOPT_RETURNTRANSFER => true
 
         );
 
@@ -49,7 +49,7 @@ class Connect
 	return $errors;
     }
 
-	public function nag_fetch
+	public function nag_fetch()
 	{
 	$errors = array();
 	
@@ -60,7 +60,7 @@ class Connect
 	$options = array(
             CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_RETURNTRANSFER => TRUE
+            CURLOPT_RETURNTRANSFER => true
     );
 	
 	curl_setopt_array($curl,$options);
