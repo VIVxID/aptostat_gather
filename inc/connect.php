@@ -74,17 +74,23 @@ class Connect
             //Parsing for service alerts
             if ($alert == "SERVICE ALERT") {
 
-                $hostSplit = strpos($check,";");
-                $hostEnd = strpos($check,";",$hostSplit+1);
-                $host = substr($check,strpos($check,":")+2,$hostSplit-strpos($check,":")-2);
-                $host = $host."|".substr($check,$hostSplit+1,$hostEnd-$hostSplit-1);
+                $typeSplit = strpos($check,";");
+                $typeEnd = strpos($check,";",$typeSplit+1);
+                $host = substr($check,strpos($check,":")+2,$typeSplit-strpos($check,":")-2);
+                $type = substr($check,$typeSplit+1,$typeEnd-$typeSplit-1);
 
-                $flag = substr($check,$hostEnd+1,strpos($check,";",$hostEnd+1)-$hostEnd-1);
+                $flag = substr($check,$typeEnd+1,strpos($check,";",$typeEnd+1)-$End-1);
 
                 $message = substr($check,strripos($check,";")+1);
 
                 if ($flag != "OK") {
-                    echo $host." - ".$flag." - ".$message."\n";
+                    errors[] = array(
+                                "lasterrortime" => $unixTime,
+                                "type" => $type,
+                                "name" => $host,
+                                "status" => $flag,
+                                "message" => $message
+                                );
                 }
 
             }
