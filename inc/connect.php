@@ -38,51 +38,52 @@ class Connect
         $checkList = $response["checks"];
 
         foreach ($checkList as $check) {
-
+        
             if ($check["status"]  != "up") {
 
-                $errors[] = $check;
-
+                if($check["type"] == "http" or "httpcustom") {
+                
+                    $errors[] = $check;
+                }
             }
-
         }
     return $errors;
     }
 
     public function nag_fetch()
     {
-    $errors = array();
+        $errors = array();
     
-    //Setup curl
+        //Setup curl
+        $curl = curl_init();
     
-    $curl = curl_init();
-    
-    $options = array(
+        $options = array(
             CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
-    );
+        );
     
-    curl_setopt_array($curl,$options);
+        curl_setopt_array($curl,$options);
     
-    $response = json_decode(curl_exec($curl),true);
+        $response = json_decode(curl_exec($curl),true);
     
-    $checkList = $response["content"];
+        $checkList = $response["content"];
     
-    foreach ($checkList as $check) {
+        foreach ($checkList as $key => $check) {
         
-        if ($check["current_state"] != 0) {
-        
-            var_dump($check);
+            if ($check["current_state"] != 0) {
+            
+                $errors[] = array(
+                            "name" => $key,
+                            "lasterrortime" => $check["last_state_change"],
+                            "status" => $check["plugin_output"]
+                            );
+                            
         
         }
-        
-    }
-    
-    var_dump($response);
     
     }
-    
+    return $errors;
     
 }
 

@@ -12,7 +12,7 @@ abstract class Log
 
     public function writeReport($name, $array)
     {
-    //WriteReport recieves an associative array containing all reports where the status is not "up". See pingdom.php and ping_connect.php
+    //WriteReport recieves an associative array containing all reports where the status is not "up". See pingdom.php and connect.php
         $reportHandle = fopen("log/".$name."_report.log","a+");
 
         foreach ($array as $report) {
@@ -21,9 +21,8 @@ abstract class Log
             $reportFile = file("log/".$name."_report.log");
 
             //Formulates a report with the format ID DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE on host HOSTNAME.
-            $string = $report["id"]." ".date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
-            $report["name"]." is ".$report["status"].". Checked with ".
-            $report["type"]." on host ".$report["hostname"]."\n";
+            $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
+            $report["name"]." is ".$report["status"]."\n";
 
 
             $search = array_keys($reportFile,$report["id"]);
@@ -36,11 +35,11 @@ abstract class Log
             rsort($list);
 
             //Creates a UNIX timestamp from the most recent matching report and compares it to the current report.
-            //If the most recent report is less than 30 minutes old, a new report will not be made.
+            //If the most recent report is less than 15 minutes old, a new report will not be made.
             $checkDate = explode(".",substr($list[0],strpos($list[0]," ")+1,17));
             $makeDate = mktime($checkDate[3],$checkDate[4],$checkDate[5],$checkDate[1],$checkDate[2],$checkDate[0]);
 
-            if ($makeDate < ($report["lasterrortime"] - 1800)) { 
+            if ($makeDate < ($report["lasterrortime"] - 900)) { 
 
                 fwrite($reportHandle,$string);
 

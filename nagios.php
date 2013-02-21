@@ -17,6 +17,8 @@ $mutex->lock();
 
 $result = $con->nag_fetch();
 
+Log::writeReport("nagios",$result);
+
 //DATA MANIPULATION GOES HERE.
 
 $mutex->unlock();
