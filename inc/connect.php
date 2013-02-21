@@ -50,12 +50,13 @@ class Connect
     public function nag_fetch()
     {
         $errors = array();
-
+        $unixTime = array();
+        
         //Setup curl
         $curl = curl_init();
 
         $options = array(
-            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
+            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/log",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );
@@ -63,25 +64,35 @@ class Connect
         curl_setopt_array($curl,$options);
 
         $response = json_decode(curl_exec($curl),true);
-
         $checkList = $response["content"];
 
-        foreach ($checkList as $key => $check) {
-
-            if ($check["current_state"] != 0) {
-
-                $errors[] = array(
-                            "name" => $key,
-                            "lasterrortime" => $check["last_state_change"],
-                            "status" => $check["plugin_output"],
-                            "type" => "Nagios"
-                            );
-
-
+        foreach ($checkList as $check) {
+        
+            $unixTime[] = substr($check,0,12);0
+            $alert = substr($check,13,strpos($check,":"));
+            
+            //Parsing for service alerts
+            if ($alert == "SERVICE ALERT") {
+            
+                $hostSplit = strpos($check,";");
+                $hostEnd = strpos($check,";",$hostSplit+1);
+                $host = substr($check,strpos($check,":")+2,$hostSplit-strpos($check,":")+2);
+                $host = $host.substr($check,$hostSplit+1,$hostEnd-$hostSplit+1;
+                
+                $flag = substr($check,$hostEnd+1,strpos($check,";",$hostEnd+1)-$hostEnd+1);
+                
+                echo $host." - ".$flag;
+            
             }
-
+            
+            //External commands have an additional sub-parameter
+            if ($alert == "EXTERNAL COMMAND") {
+            
+            }
+        
         }
-    return $errors;
+        
+    
     }
     
 }
