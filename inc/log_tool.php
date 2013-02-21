@@ -23,19 +23,24 @@ abstract class Log
             rsort($reportFile);
             $search = array_search($report["name"],$reportFile);
             
-            //Creates a UNIX timestamp from the most recent matching report and compares it to the current report.
-            //If the most recent report is less than 15 minutes old, a new report will not be made.
-            $checkDate = explode(".",substr($reportFile[$search],0,17));
-            $makeDate = mktime($checkDate[3],$checkDate[4],$checkDate[5],$checkDate[1],$checkDate[2],$checkDate[0]);
+            if ($search == false) {
 
-            if ($makeDate < ($report["lasterrortime"] - 900)) {
+                    //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
+                    $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
+                    $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$message."\n";
 
-                //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
-                $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
-                $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$message."\n";
+                    fwrite($reportHandle,$string);
+            
+            } else {
+            
+                if ($makeDate < ($report["lasterrortime"] - 900)) {
 
-                fwrite($reportHandle,$string);
+                    //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
+                    $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
+                    $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$message."\n";
 
+                    fwrite($reportHandle,$string);
+                }
             }
         }
     }
