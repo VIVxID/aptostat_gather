@@ -38,9 +38,9 @@ class Connect
         $checkList = $response["checks"];
 
         foreach ($checkList as $check) {
-        
+
             if ($check["status"]  != "up") {
-                
+
                     $errors[] = $check;
             }
         }
@@ -50,38 +50,38 @@ class Connect
     public function nag_fetch()
     {
         $errors = array();
-    
+
         //Setup curl
         $curl = curl_init();
-    
+
         $options = array(
             CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );
-    
+
         curl_setopt_array($curl,$options);
-    
+
         $response = json_decode(curl_exec($curl),true);
-    
+
         $checkList = $response["content"];
-    
+
         foreach ($checkList as $key => $check) {
-        
+
             if ($check["current_state"] != 0) {
-            
+
                 $errors[] = array(
                             "name" => $key,
                             "lasterrortime" => $check["last_state_change"],
                             "status" => $check["plugin_output"],
                             "type" => "Nagios"
                             );
-                            
-        
+
+
             }
-    
+
         }
     return $errors;
-    }    
+    }
 }
 

@@ -3,7 +3,7 @@
 class Mutex
 {
     private $lockFile;
-    private $name
+    private $name;
     private $expireTime = 1800;
 
     function __construct($a)
