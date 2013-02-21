@@ -22,25 +22,25 @@ class Mutex
 
                 //Log the time until expiration.
                 $remainingTime = (filemtime($this->lockFile) - (time() - $this->expireTime)) / 60;
-                Log::writeLog($name,"Process locked, expires in ".number_format($remainingTime,0)." minutes.");
+                Log::writeLog($this->name,"Process locked, expires in ".number_format($remainingTime,0)." minutes.");
                 return false;
 
             } else {
                 //If the timestamp is > 30min, attempt to delete and remake.
                 if (unlink($this->lockFile)) {
 
-                    Log::writeLog($name,"WARNING: Lock expired");
+                    Log::writeLog($this->name,"WARNING: Lock expired");
 
                     if(!touch($this->lockFile)) {
 
-                        Log::writeLog($name,"WARNING: Unable to create lock. Exiting.");
+                        Log::writeLog($this->name,"WARNING: Unable to create lock. Exiting.");
                         return false;
 
                     }
 
                 } else {
                     //If unable to remove lock.
-                    Log::writeLog($name,"WARNING: Unable to remove lock. Exiting.");
+                    Log::writeLog($this->name,"WARNING: Unable to remove lock. Exiting.");
                     return false;
 
                 }
@@ -51,7 +51,7 @@ class Mutex
             //If file does not exist, create it.
             if (!touch($this->lockFile)) {
 
-                Log::writeLog($name,"WARNING: Unable to create lock. Exiting");
+                Log::writeLog($this->name,"WARNING: Unable to create lock. Exiting");
                 return false;
 
             } else {
@@ -66,7 +66,7 @@ class Mutex
         //Cleaning up the mutex lock
         //
         if (!(unlink($this->lockFile))) {
-            Log::writeLog($name,"WARNING: Unable to delete lock at cleanup");
+            Log::writeLog($this->name,"WARNING: Unable to delete lock at cleanup");
             return false;
         } else {
             return true;

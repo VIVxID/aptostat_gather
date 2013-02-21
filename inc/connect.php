@@ -68,7 +68,7 @@ class Connect
 
         foreach ($checkList as $check) {
 
-            $unixTime[] = substr($check,0,12);
+            $unixTime[] = substr($check,1,11);
             $alert = substr($check,13,strpos($check,":")-13);
 
             //Parsing for service alerts
@@ -79,12 +79,12 @@ class Connect
                 $host = substr($check,strpos($check,":")+2,$typeSplit-strpos($check,":")-2);
                 $type = substr($check,$typeSplit+1,$typeEnd-$typeSplit-1);
 
-                $flag = substr($check,$typeEnd+1,strpos($check,";",$typeEnd+1)-$End-1);
+                $flag = substr($check,$typeEnd+1,strpos($check,";",$typeEnd+1)-$typeEnd-1);
 
                 $message = substr($check,strripos($check,";")+1);
 
                 if ($flag != "OK") {
-                    errors[] = array(
+                    $errors[] = array(
                                 "lasterrortime" => $unixTime,
                                 "type" => $type,
                                 "name" => $host,
