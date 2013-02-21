@@ -6,7 +6,7 @@ require "inc/log_tool.php";
 require "inc/connect.php";
 require "inc/mutex.php";
 
-$con = new Connect_Ping();
+$con = new Connect();
 $mutex = new Mutex("nagios");
 
 $mutex->lock();
