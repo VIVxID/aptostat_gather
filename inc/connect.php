@@ -80,10 +80,10 @@ class Connect
                             );
                             
         
+            }
+    
         }
-    
-    }
     return $errors;
-    
+    }    
 }
 

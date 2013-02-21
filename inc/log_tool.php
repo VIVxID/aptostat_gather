@@ -25,7 +25,7 @@ abstract class Log
             $report["name"]." is ".$report["status"]."\n";
 
 
-            $search = array_keys($reportFile,$report["id"]);
+            $search = array_keys($reportFile,$report["name"]);
 
             //Gets an array of previous reports on the same system from the logfile.
             foreach ($search as $key) {
