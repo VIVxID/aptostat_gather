@@ -68,7 +68,7 @@ class Connect
 
         foreach ($checkList as $check) {
 
-            $unixTime[] = substr($check,1,11);
+            $unixTime = substr($check,1,11);
             $alert = substr($check,13,strpos($check,":")-13);
 
             //Parsing for service alerts
