@@ -22,7 +22,7 @@ abstract class Log
 
             //Formulates a report with the format ID DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE on host HOSTNAME.
             $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
-            $report["name"]." is ".$report["status"]."\n";
+            $report["name"]." is ".$report["status"].". Checked with ".$report["type"]."\n";
 
 
             $search = array_keys($reportFile,$report["name"]);

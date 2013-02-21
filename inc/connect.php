@@ -40,11 +40,8 @@ class Connect
         foreach ($checkList as $check) {
         
             if ($check["status"]  != "up") {
-
-                if($check["type"] == "http" or "httpcustom") {
                 
                     $errors[] = $check;
-                }
             }
         }
     return $errors;
@@ -76,7 +73,8 @@ class Connect
                 $errors[] = array(
                             "name" => $key,
                             "lasterrortime" => $check["last_state_change"],
-                            "status" => $check["plugin_output"]
+                            "status" => $check["plugin_output"],
+                            "type" => "Nagios"
                             );
                             
         
