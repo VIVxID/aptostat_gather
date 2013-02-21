@@ -36,7 +36,7 @@ abstract class Log
 
             //Creates a UNIX timestamp from the most recent matching report and compares it to the current report.
             //If the most recent report is less than 15 minutes old, a new report will not be made.
-            $checkDate = explode(".",substr($list[0],strpos($list[0]," ")+1,17));
+            $checkDate = explode(".",substr($list[0],0,17));
             $makeDate = mktime($checkDate[3],$checkDate[4],$checkDate[5],$checkDate[1],$checkDate[2],$checkDate[0]);
 
             if ($makeDate < ($report["lasterrortime"] - 900)) { 
