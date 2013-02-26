@@ -19,6 +19,10 @@ $result = $con->nag_state();
 
 Log::writeState("nagios",$result);
 
+$result = $con->nag_fetch();
+
+Log::writeReport("nagiostest",$result);
+
 //DATA MANIPULATION GOES HERE.
 
 $mutex->unlock();
