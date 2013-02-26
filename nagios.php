@@ -17,8 +17,6 @@ $mutex->lock();
 
 $result = $con->nag_state();
 
-Log::writeLog("nagios",json_encode($result));
-
 Log::writeState("nagios",$result);
 
 //DATA MANIPULATION GOES HERE.

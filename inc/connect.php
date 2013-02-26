@@ -126,7 +126,7 @@ class Connect
         
             foreach ($check["services"] as $name => $service) {
             
-                if ($service["current_state"] == "0") {
+                if ($service["current_state"] != "0") {
                     
                     $tmpError = 1;
                     $tmpErrors[] = array("output" => $service["plugin_output"],
@@ -145,9 +145,10 @@ class Connect
                 
                     }
                 }
+                $tmpError = 0;
+                $tmpErrors = array();
             }
         }
-var_dump($errors);
         return $errors;
     }
 }
