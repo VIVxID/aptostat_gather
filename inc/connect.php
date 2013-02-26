@@ -112,7 +112,7 @@ class Connect
         $errors = array();
         
         $options = array(
-            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/log",
+            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );
@@ -126,18 +126,18 @@ class Connect
         
             foreach ($check["services"] as $name => $service) {
             
-                if ($service["current_state"] != "0") {
+                if ($service["current_state"] == "0") {
                     
-                    $error = 1;
+                    $tmpError = 1;
                     $tmpErrors[] = array("output" => $service["plugin_output"],
                                             "service" => $name,
                                             "time" => $service["last_check"]);
             
                 }
             
-                if ($error == 1) {
+                if ($tmpError == 1) {
             
-                    $errors[] = $checkName => array();
+                    
             
                     foreach ($tmpErrors as $tmp) {
                 
@@ -147,6 +147,7 @@ class Connect
                 }
             }
         }
-        var_dump($errors);
+var_dump($errors);
+        return $errors;
     }
 }

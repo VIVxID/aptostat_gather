@@ -60,7 +60,7 @@ abstract class Log
             foreach ($report as $service) {
             
                 $string = "        ".date("y.m.d.H.i.s",intval($service["time"]))." ".$service["service"]." => ".$service["output"]."\n";
-            
+                fwrite($reportHandle,$string);
             }
         }
     }
