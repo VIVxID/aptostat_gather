@@ -47,4 +47,21 @@ abstract class Log
             }
         }
     }
+    
+    public function writeState($name,$array)
+    {
+        $reportHandle = fopen("log/".$name."_report.log","a+");
+        
+        foreach ($array as $name => $report) {
+        
+            $string = $name.": \n"; 
+            fwrite($reportHandle,$string);
+            
+            foreach ($report as $service) {
+            
+                $string = "        ".date("y.m.d.H.i.s",intval($service["time"]))." ".$service["service"]." => ".$service["output"]."\n";
+            
+            }
+        }
+    }
 }

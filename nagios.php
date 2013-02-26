@@ -15,7 +15,7 @@ $mutex->lock();
 //Connect and retrieve from Pingdom.
 //
 
-$result = $con->nag_fetch();
+$result = $con->nag_state();
 
 Log::writeReport("nagios",$result);
 
