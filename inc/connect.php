@@ -106,26 +106,31 @@ class Connect
 
     function nag_state()
     {
+        //Init
         $curl = curl_init();
         $tmpError = 0;
         $tmpErrors = array();
         $errors = array();
 
+        //Setting curl options
         $options = array(
             CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );
-
         curl_setopt_array($curl,$options);
 
+        //Executing curl, decoding JSON into an associative array
         $response = json_decode(curl_exec($curl),true);
         $checkList = $response["content"];
 
+        //Go through each host/server/entity in sequence
         foreach ($checkList as $checkName => $check) {
 
+            //Check every service (ping, SSH, free disk space, free memory etc) for a given host for errors
             foreach ($check["services"] as $name => $service) {
 
+                //If an error is found, add information about it to a temporary array
                 if ($service["current_state"] != "0") {
 
                     $tmpError = 1;
@@ -137,18 +142,19 @@ class Connect
                 }
             }
 
+            //If an error was found, dump the temporary array into another array named after the host
             if ($tmpError == 1) {
-
                     foreach ($tmpErrors as $tmp) {
-
                         $errors[$checkName][] = $tmp;
-
                     }
                 }
+                
+                //Reset for next host
                 $tmpError = 0;
                 $tmpErrors = array();
 
         }
+        //Return the array containing all hosts with errors, grouped with their respective errors.
         return $errors;
     }
 }
