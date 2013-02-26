@@ -92,7 +92,6 @@ class Connect
                                 "message" => $message
                                 );
                 }
-
             }
 
             //External commands have an additional sub-parameter
@@ -103,6 +102,26 @@ class Connect
         }
 
     return $errors;
+    }
+    
+    function nag_state()
+    {
+        curl = curl_init();
+        
+        $options = array(
+            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/log",
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_RETURNTRANSFER => true
+        );
+        
+        curl_setopt_array($curl,$options);
+        
+        $response = json_decode(curl_exec($curl),true);
+        $checkList = $response["content"];
+        
+        var_dump($checkList);
+        
+        
     }
 
 }

@@ -26,8 +26,8 @@ abstract class Log
             if ($search == false) {
 
                     //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE. MESSAGE
-                    $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
-                    $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$message."\n";
+                    $string = date("y.m.d.H.i.s",intval($report["lasterrortime"]))." - ".
+                    $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$report["message"]."\n";
 
                     fwrite($reportHandle,$string);
             
@@ -39,7 +39,7 @@ abstract class Log
                 if ($makeDate < ($report["lasterrortime"] - 900)) {
 
                     //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
-                    $string = date("y.m.d.H.i.s",$report["lasterrortime"])." - ".
+                    $string = date("y.m.d.H.i.s",intval($report["lasterrortime"]))." - ".
                     $report["name"]." is ".$report["status"].". Checked with ".$report["type"].". ".$report["message"]."\n";
 
                     fwrite($reportHandle,$string);
