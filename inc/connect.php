@@ -136,7 +136,7 @@ class Connect
 
                 }
             }
-            
+
             if ($tmpError == 1) {
 
                     foreach ($tmpErrors as $tmp) {
@@ -147,7 +147,7 @@ class Connect
                 }
                 $tmpError = 0;
                 $tmpErrors = array();
-            
+
         }
         return $errors;
     }
