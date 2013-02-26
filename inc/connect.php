@@ -51,7 +51,7 @@ class Connect
     {
         $errors = array();
         $unixTime = array();
-        
+
         //Setup curl
         $curl = curl_init();
 
@@ -103,46 +103,47 @@ class Connect
 
     return $errors;
     }
-    
+
     function nag_state()
     {
         $curl = curl_init();
         $tmpError = 0;
         $tmpErrors = array();
         $errors = array();
-        
+
         $options = array(
             CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );
-        
+
         curl_setopt_array($curl,$options);
-        
+
         $response = json_decode(curl_exec($curl),true);
         $checkList = $response["content"];
-        
+
         foreach ($checkList as $checkName => $check) {
-        
+
             foreach ($check["services"] as $name => $service) {
-            
+
                 if ($service["current_state"] != "0") {
-                    
+
                     $tmpError = 1;
                     $tmpErrors[] = array("output" => $service["plugin_output"],
                                             "service" => $name,
-                                            "time" => $service["last_check"]);
-            
+                                            "time" => $service["last_check"],
+                                            "state" => $service["current_state"]);
+
                 }
-            
+
                 if ($tmpError == 1) {
-            
-                    
-            
+
+
+
                     foreach ($tmpErrors as $tmp) {
-                
+
                         $errors[$checkName][] = $tmp;
-                
+
                     }
                 }
                 $tmpError = 0;
