@@ -37,7 +37,8 @@ abstract class Log
 
             foreach ($report as $service) {
 
-                $string = "        ".date("y.m.d.H.i.s",intval($service["time"]))." ".$service["state"]." ".$service["service"]." => ".$service["output"]."\n";
+                $string = "       Checked: ".date("y.m.d.H.i.s",intval($service["lastcheck"]))." Changed: ".date("y.m.d.H.i.s",intval($service["statechange"]))." ".$service["state"]." ".
+                          $service["service"]." => ".$service["output"]."\n";
                 fwrite($reportHandle,$string);
             }
         }

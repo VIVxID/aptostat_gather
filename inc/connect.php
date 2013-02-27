@@ -127,7 +127,7 @@ class Connect
         //Go through each host/server/entity in sequence
         foreach ($checkList as $checkName => $check) {
 
-            //Check every service (ping, SSH, free disk space, free memory etc) for a given host for errors
+            //Check every service (ping, SSH, free disk space, free memory etc) on a given host for errors
             foreach ($check["services"] as $name => $service) {
 
                 //If an error is found, add information about it to a temporary array
@@ -136,8 +136,9 @@ class Connect
                     $tmpError = 1;
                     $tmpErrors[] = array("output" => $service["plugin_output"],
                                             "service" => $name,
-                                            "time" => $service["last_check"],
-                                            "state" => $service["current_state"]);
+                                            "lastcheck" => $service["last_check"],
+                                            "state" => $service["current_state"],
+                                            "statechange" => $service["last_state_change"]);
 
                 }
             }
@@ -148,7 +149,7 @@ class Connect
                         $errors[$checkName][] = $tmp;
                     }
                 }
-                
+
                 //Reset for next host
                 $tmpError = 0;
                 $tmpErrors = array();
