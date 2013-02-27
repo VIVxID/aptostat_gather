@@ -17,7 +17,7 @@ $mutex->lock();
 
 $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
 
-$result = $con->ping_fetch($login[0],$login[1],$login[2]);
+$result = $con->pingFetch($login[0],$login[1],$login[2]);
 
 Log::writeReport("pingdom",$result);
 

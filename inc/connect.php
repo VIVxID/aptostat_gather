@@ -6,7 +6,7 @@
 class Connect
 {
 
-    public function ping_fetch($user,$pass,$key)
+    public function pingFetch($user,$pass,$key)
     {
 
         $errors = array();
@@ -47,7 +47,7 @@ class Connect
     return $errors;
     }
 
-    public function nag_fetch()
+    public function nagFetch()
     {
         $errors = array();
         $unixTime = array();
@@ -104,7 +104,7 @@ class Connect
     return $errors;
     }
 
-    function nag_state()
+    function nagState($country)
     {
         //Init
         $curl = curl_init();
@@ -114,7 +114,7 @@ class Connect
 
         //Setting curl options
         $options = array(
-            CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
+            CURLOPT_URL => "http://nagios.".$country.".aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_RETURNTRANSFER => true
         );

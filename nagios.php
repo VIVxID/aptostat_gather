@@ -15,13 +15,12 @@ $mutex->lock();
 //Connect and retrieve from Pingdom.
 //
 
-$result = $con->nag_state();
+$london = $con->nagState("lon");
+$amster = $con->nagState("ams");
+
+$result = array_intersect_assoc($london,$amster);
 
 Log::writeState("nagios",$result);
-
-$result = $con->nag_fetch();
-
-Log::writeReport("nagiostest",$result);
 
 //DATA MANIPULATION GOES HERE.
 
