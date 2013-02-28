@@ -30,7 +30,7 @@ class Connect
         $response = json_decode(curl_exec($curl),true);
 
         if (isset($response["error"])) {
-            Log::writeLog("pingdom","Pingdom: ".$response["error"]["errormessage"]);
+            Logger::writeLog("pingdom","Pingdom: ".$response["error"]["errormessage"]);
             exit();
         }
 

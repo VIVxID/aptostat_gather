@@ -1,6 +1,6 @@
 <?php
 //Log handler for Pingdom&Nagios connections
-abstract class Log
+abstract class Logger
 {
 
     public function writeLog($name, $message)

@@ -19,7 +19,7 @@ $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
 
 $result = $con->pingFetch($login[0],$login[1],$login[2]);
 
-Log::writeReport("pingdom",$result);
+Logger::writeReport("pingdom",$result);
 
 //DATA MANIPULATION GOES HERE.
 

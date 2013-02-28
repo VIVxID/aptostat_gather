@@ -65,6 +65,6 @@ foreach ($result as $name => $report) {
     }
 }
 
-Log::writeState("nagios",$result);
+Logger::writeState("nagios",$result);
 
 $mutex->unlock();
