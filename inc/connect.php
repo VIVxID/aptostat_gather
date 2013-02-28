@@ -155,7 +155,7 @@ class Connect
                 $tmpErrors = array();
 
         }
-        //Return the array containing all hosts with errors, grouped with their respective errors.
+        //Return the array containing all errors, grouped by host.
         return $errors;
     }
 }

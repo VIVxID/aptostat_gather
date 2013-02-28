@@ -15,15 +15,16 @@ $mutex = new Mutex("nagios");
 $mutex->lock();
 
 $london = $con->nagState("lon");
-$amster = $con->nagState("ams");
+$amsterdam = $con->nagState("ams");
 
-$result = array_intersect_assoc($london,$amster);
+$result = array_intersect_assoc($london,$amsterdam);
 
 foreach ($result as $name => $report) {
 
     foreach ($report as $service) {
 
-        $match = ReportQuery::create()
+        //Checks the database for matching reports.
+        $matchInvis = ReportQuery::create()
             ->filterByTimestamp($service["statechange"])
             ->useServiceQuery()
                 ->filterByName($name)
@@ -33,40 +34,49 @@ foreach ($result as $name => $report) {
             ->endUse()
             ->filterByCheckType($service["type"])
             ->find();
+
+        $matchVis = ReportQuery::create()
+            ->filterByTimestamp($service["statechange"])
+            ->useServiceQuery()
+                ->filterByName($name)
+            ->endUse()
+            ->filterByCheckType($service["type"])
+            ->find();
             
-        if (!is_null($match)) {
-        
-            foreach ($match as $groupId) {
-            
+        if (!is_null($matchInvis)) {
+
+            foreach ($matchInvis as $groupId) {
+                
+                //If 
                 $group = GroupsQuery::create()->findOneByIdGroup($groupId->getIdGroup);
                 $group->setProposedFlag($service["state"]);
                 $group->save();
-                
+
             }
-        } else {
-        
+        } elseif (is_null($matchVis) {
+
             $group = new Groups();
             $group->setProposedFlag($service["state"]);
-        
+
             $serv = ServiceQuery::create()->findByName($name);
-        
+
             foreach ($serv as $tmp) {
-        
+
                 $servId = $tmp->getIdService();
-        
+
             }
-        
+
             $entry = new Report();
             $entry->setErrorMessage($service["output"]);
             $entry->setTimestamp($service["timestamp"]);
             $entry->setCheckType($service["type"]);
             $entry->setIdSource('1');
             $entry->setIdService($servId);
-            
+
             $group->addReport($report);
-            
+
             $entry->save();
-        
+
         }
     }
 }

@@ -17,7 +17,7 @@ abstract class Logger
         $message = "";
 
         foreach ($array as $report) {
-        
+
             //Formulates a report with the format DATE TIME - NAME OF SYSTEM is STATUS. Checked with TYPE.
             $string = date("y.m.d.H.i.s",intval($report["lasterrortime"]))." - ".
             $report["name"]." is ".$report["status"].". Checked with ".$report["type"].".\n";
