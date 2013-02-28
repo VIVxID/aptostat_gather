@@ -33,7 +33,7 @@ foreach ($result as $name => $report) {
                 ->filterByProposedFlag('4')
             ->endUse()
             ->filterByCheckType($service["type"])
-            ->find();
+            ->findOne();
 
         $matchVis = ReportQuery::create()
             ->filterByTimestamp($service["statechange"])
@@ -42,21 +42,17 @@ foreach ($result as $name => $report) {
             ->endUse()
             ->filterByCheckType($service["type"])
             ->find();
-            
+
         if (!is_null($matchInvis)) {
 
-            foreach ($matchInvis as $groupId) {
-                
-                //If 
-                $group = GroupsQuery::create()->findOneByIdGroup($groupId->getIdGroup);
-                $group->setProposedFlag($service["state"]);
-                $group->save();
+            $group = GroupsQuery::create()->findPK($matchInvis->getIdGroup());
+            $group->setProposedFlag($service["state"]);
+            $group->save();
 
-            }
-        } elseif (is_null($matchVis) {
+        } elseif (is_null($matchVis)) {
 
             $group = new Groups();
-            $group->setProposedFlag($service["state"]);
+            $group->setProposedFlag('4');
 
             $serv = ServiceQuery::create()->findByName($name);
 
