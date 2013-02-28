@@ -48,14 +48,20 @@ foreach ($result as $name => $report) {
             $group = new Groups();
             $group->setProposedFlag($service["state"]);
         
-            $serv = ServiceQuery::create()->findOneByIdService($name);
+            $serv = ServiceQuery::create()->findByName($name);
+        
+            foreach ($serv as $tmp) {
+        
+                $servId = $tmp->getIdService();
+        
+            }
         
             $entry = new Report();
             $entry->setErrorMessage($service["output"]);
             $entry->setTimestamp($service["timestamp"]);
             $entry->setCheckType($service["type"]);
             $entry->setIdSource('1');
-            $entry->setIdService($serv);
+            $entry->setIdService($servId);
             
             $group->addReport($report);
             
