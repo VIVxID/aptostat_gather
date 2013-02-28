@@ -135,7 +135,7 @@ class Connect
 
                     $tmpError = 1;
                     $tmpErrors[] = array("output" => $service["plugin_output"],
-                                            "service" => $name,
+                                            "type" => $name,
                                             "lastcheck" => $service["last_check"],
                                             "state" => $service["current_state"],
                                             "statechange" => $service["last_state_change"]);
