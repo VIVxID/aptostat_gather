@@ -41,7 +41,7 @@ foreach ($result as $name => $report) {
                 ->filterByName($name)
             ->endUse()
             ->filterByCheckType($service["type"])
-            ->find();
+            ->findOne();
 
         if (!is_null($matchInvis)) {
 
@@ -64,12 +64,12 @@ foreach ($result as $name => $report) {
 
             $entry = new Report();
             $entry->setErrorMessage($service["output"]);
-            $entry->setTimestamp($service["timestamp"]);
+            $entry->setTimestamp($service["statechange"]);
             $entry->setCheckType($service["type"]);
             $entry->setIdSource('1');
             $entry->setIdService($servId);
 
-            $group->addReport($report);
+            $group->addReport($entry);
 
             $entry->save();
 
