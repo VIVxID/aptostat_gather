@@ -152,15 +152,21 @@ class Aptostat
             
                     if ($key != $groupMaster) {
             
-                        $groupUpdate = GroupsQuery::create()->findOneByIdGroup($key);
-                        $groupUpdate->setIdGroup($groupMaster);
+                        $groupDelete = GroupsQuery::create()->findOneByIdGroup($key);
+                        $groupDelete->delete();
                     
                         $reportUpdate = ReportQuery::create()->findOneByIdGroup($key);
                         $reportUpdate->setIdGroup($groupMaster);
                     
-                        $groupUpdate->save();
                         $reportUpdate->save();
 
+                    } else {
+                    
+                        $groupUpdate = GroupsQuery::create()->findOneByIdGroup($groupMaster);
+                        $groupUpdate->setProposedFlag('2');
+                        
+                        $groupUpdate->save();
+                    
                     }
                 }
             }
