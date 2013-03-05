@@ -138,21 +138,21 @@ class Aptostat
             
         foreach ($reports as $report) {
         
-            $list[$report->getIdService][$report->getIdGroup()] = $report->getIdReport;
+            $list[$report->getIdService][$report->getIdGroup()] = $report->getIdReport();
         
         }
         
         foreach ($list as $group) {
 
-            if (count($group) > 1) {
+            if (count($group) >= 2) {
             
                 $groupMaster = key($group);
             
-                for ($i=0; $i<=count($group); $i++) {
+                foreach ($group as $key => $value) {
             
-                    $entry = ReportQuery::create()->findOneByIdReport($group[$i]);
-                    $group->setProposedFlag($groupMaster);
-                    $group->save();
+                    $entry = GroupsQuery::create()->findOneByIdGroup($key);
+                    $entry->setIdGroup($groupMaster);
+                    $entry->save();
 
                 }
             }
