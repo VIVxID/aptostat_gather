@@ -23,7 +23,7 @@ foreach ($result as $name => $report) {
 
     foreach ($report as $service) {
 
-        //Checks the database for matching reports.
+        //Checks the database for matching invisible reports.
         $matchInvis = ReportQuery::create()
             ->filterByTimestamp($service["statechange"])
             ->useServiceQuery()
@@ -32,14 +32,17 @@ foreach ($result as $name => $report) {
             ->useGroupsQuery()
                 ->filterByProposedFlag('4')
             ->endUse()
+            ->filterByIdSource('1')
             ->filterByCheckType($service["type"])
             ->findOne();
 
+        //Checks the database for matching visible reports.
         $matchVis = ReportQuery::create()
             ->filterByTimestamp($service["statechange"])
             ->useServiceQuery()
                 ->filterByName($name)
             ->endUse()
+            ->filterByIdSource('1')
             ->filterByCheckType($service["type"])
             ->findOne();
 
