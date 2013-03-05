@@ -138,7 +138,7 @@ class Aptostat
             
         foreach ($reports as $report) {
         
-            $list[$report->getIdService][$report->getIdGroup()] = $report->getIdReport();
+            $list[$report->getIdService()][$report->getIdGroup()] = $report->getIdReport();
         
         }
         
@@ -150,10 +150,18 @@ class Aptostat
             
                 foreach ($group as $key => $value) {
             
-                    $entry = GroupsQuery::create()->findOneByIdGroup($key);
-                    $entry->setIdGroup($groupMaster);
-                    $entry->save();
+                    if ($key != $groupMaster) {
+            
+                        $groupUpdate = GroupsQuery::create()->findOneByIdGroup($key);
+                        $groupUpdate->setIdGroup($groupMaster);
+                    
+                        $reportUpdate = ReportQuery::create()->findOneByIdGroup($key);
+                        $reportUpdate->setIdGroup($groupMaster);
+                    
+                        $groupUpdate->save();
+                        $reportUpdate->save();
 
+                    }
                 }
             }
         }
