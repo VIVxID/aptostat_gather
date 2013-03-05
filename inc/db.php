@@ -116,4 +116,46 @@ class Aptostat
             }
         }
     }
+    
+    function flagResolved()
+    {
+    
+        
+    
+    }
+    
+    function groupReports()
+    {
+    
+        $list = array();
+    
+        $reports = ReportQuery::create()
+            ->useGroupsQuery()
+                ->filterByProposedFlag(array(1,2,4))
+            ->endUse()
+            ->orderByIdService()
+            ->find();
+            
+        foreach ($reports as $report) {
+        
+            $list[$report->getIdService][$report->getIdGroup()] = $report->getIdReport;
+        
+        }
+        
+        foreach ($list as $group) {
+
+            if (count($group) > 1) {
+            
+                $groupMaster = key($group);
+            
+                for ($i=0; $i<=count($group); $i++) {
+            
+                    $entry = ReportQuery::create()->findOneByIdReport($group[$i]);
+                    $group->setProposedFlag($groupMaster);
+                    $group->save();
+
+                }
+            }
+        }
+    }
 }

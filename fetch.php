@@ -31,8 +31,6 @@ $nagResult = array_intersect_assoc($london,$amsterdam);
 $apto->pingSave($pingResult);
 $apto->nagSave($nagResult);
 
-Logger::writeReport("pingdom",$result);
-
-//DATA MANIPULATION GOES HERE.
+$apto->groupReports();
 
 $mutex->unlock();
