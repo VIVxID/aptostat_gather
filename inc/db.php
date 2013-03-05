@@ -83,7 +83,7 @@ class Aptostat
                 //If a matching report is found as invisible, make visible.
                 if (!is_null($matchInvis)) {
 
-                    $group = GroupsQuery::create()->findPK($matchInvis->getIdGroup());
+                    $group = GroupsQuery::create()->findPK(array($matchInvis->getIdGroup(),$matchInvis->getIdReport()));
                     $group->setProposedFlag($service["state"]);
                     $group->save();
 
@@ -120,7 +120,11 @@ class Aptostat
     function flagResolved()
     {
     
-        
+        $nagiosReports = ReportQuery::create()
+            ->filterByIdSource('1')
+            ->useGroupsQuery()
+                filterByProposedFlag(array(1,2))
+            ->endUse()
     
     }
     
@@ -152,22 +156,15 @@ class Aptostat
             
                     if ($key != $groupMaster) {
             
-                        $groupDelete = GroupsQuery::create()->findOneByIdGroup($key);
-                        $groupDelete->delete();
+                        $groupUpdate = GroupsQuery::create()->findOneByIdReport($value);
+                        $groupUpdate->setIdGroup($groupMaster);
                     
                         $reportUpdate = ReportQuery::create()->findOneByIdGroup($key);
                         $reportUpdate->setIdGroup($groupMaster);
                     
                         $reportUpdate->save();
 
-                    } else {
-                    
-                        $groupUpdate = GroupsQuery::create()->findOneByIdGroup($groupMaster);
-                        $groupUpdate->setProposedFlag('2');
-                        
-                        $groupUpdate->save();
-                    
-                    }
+                    } 
                 }
             }
         }
