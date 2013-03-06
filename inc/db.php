@@ -26,6 +26,7 @@ class Aptostat
 
                 $group = new Groups();
                 $group->setProposedFlag('2');
+                $group->setTimestamp(time());
 
                 $serv = ServiceQuery::create()->findByName($report["hostname"]);
 
@@ -41,8 +42,7 @@ class Aptostat
                 $entry->setCheckType($report["type"]);
                 $entry->setIdSource('2');
                 $entry->setIdService($servId);
-
-                $group->addReport($entry);
+                $entry->addGroups($group);
 
                 $entry->save();
 
@@ -58,16 +58,16 @@ class Aptostat
             foreach ($report as $service) {
 
                 //Checks the database for matching invisible reports.
-                $matchInvis = ReportQuery::create()
-                    ->filterByTimestamp($service["statechange"])
-                    ->useServiceQuery()
-                        ->filterByName($name)
+                $matchInvis = GroupsQuery::create()
+                    ->useReportQuery()
+                        ->filterByTimestamp($service["statechange"])
+                        ->filterByIdSource('1')
+                        ->filterByCheckType($service["type"])
+                        ->useServiceQuery()
+                            ->filterByName($name)
+                        ->endUse()
                     ->endUse()
-                    ->useGroupsQuery()
-                        ->filterByProposedFlag('4')
-                    ->endUse()
-                    ->filterByIdSource('1')
-                    ->filterByCheckType($service["type"])
+                    ->filterByProposedFlag('4')
                     ->findOne();
 
                 //Checks the database for matching visible reports.
@@ -85,6 +85,7 @@ class Aptostat
 
                     $group = GroupsQuery::create()->findPK(array($matchInvis->getIdGroup(),$matchInvis->getIdReport()));
                     $group->setProposedFlag($service["state"]);
+                    $group->setTimestamp(time());
                     $group->save();
 
                 //If no matching report is found, create as invisible.
@@ -92,6 +93,7 @@ class Aptostat
 
                     $group = new Groups();
                     $group->setProposedFlag('4');
+                    $group->setTimestamp(time());
 
                     $serv = ServiceQuery::create()->findByName($name);
 
@@ -107,8 +109,7 @@ class Aptostat
                     $entry->setCheckType($service["type"]);
                     $entry->setIdSource('1');
                     $entry->setIdService($servId);
-
-                    $group->addReport($entry);
+                    $entry->addGroups($group);
 
                     $entry->save();
 
@@ -120,12 +121,7 @@ class Aptostat
     function flagResolved()
     {
     
-        $nagiosReports = ReportQuery::create()
-            ->filterByIdSource('1')
-            ->useGroupsQuery()
-                filterByProposedFlag(array(1,2))
-            ->endUse()
-    
+        
     }
     
     function groupReports()
@@ -134,12 +130,14 @@ class Aptostat
         $list = array();
     
         $reports = ReportQuery::create()
+            ->join('Report.Groups')
+            ->where('Report.IdReport = ?', 'Groups.IdReport')
             ->useGroupsQuery()
                 ->filterByProposedFlag(array(1,2,4))
             ->endUse()
             ->orderByIdService()
             ->find();
-            
+
         foreach ($reports as $report) {
         
             $list[$report->getIdService()][$report->getIdGroup()] = $report->getIdReport();
