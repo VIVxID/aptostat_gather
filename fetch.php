@@ -31,6 +31,9 @@ $nagResult = array_intersect_assoc($london,$amsterdam);
 $apto->pingSave($pingResult);
 $apto->nagSave($nagResult);
 
+$apto->flagResolvedNagios($nagResult);
+$apto->flagResolvedPingdom($pingResult);
+
 $apto->groupReports();
 
 $mutex->unlock();

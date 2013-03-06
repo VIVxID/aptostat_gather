@@ -28,20 +28,14 @@ class Aptostat
                 $group->setProposedFlag('2');
                 $group->setTimestamp(time());
 
-                $serv = ServiceQuery::create()->findByName($report["hostname"]);
-
-                foreach ($serv as $tmp) {
-
-                    $servId = $tmp->getIdService();
-
-                }
+                $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
 
                 $entry = new Report();
                 $entry->setErrorMessage($report["status"]);
                 $entry->setTimestamp($report["lasterrortime"]);
                 $entry->setCheckType($report["type"]);
                 $entry->setIdSource('2');
-                $entry->setIdService($servId);
+                $entry->setIdService($serv->getIdService());
                 $entry->addGroups($group);
 
                 $entry->save();
@@ -95,7 +89,7 @@ class Aptostat
                     $group->setProposedFlag('4');
                     $group->setTimestamp(time());
 
-                    $serv = ServiceQuery::create()->findByName($name);
+                    $serv = ServiceQuery::create()->findOneByName($name);
 
                     foreach ($serv as $tmp) {
 
@@ -108,7 +102,7 @@ class Aptostat
                     $entry->setTimestamp($service["statechange"]);
                     $entry->setCheckType($service["type"]);
                     $entry->setIdSource('1');
-                    $entry->setIdService($servId);
+                    $entry->setIdService($serv->getIdService());
                     $entry->addGroups($group);
 
                     $entry->save();
@@ -117,25 +111,105 @@ class Aptostat
             }
         }
     }
-    
-    function flagResolved()
+
+    function flagResolvedPingdom($pingdom)
     {
+
+        $found = 0;
+
+        $pingReports = ReportQuery::create()
+            ->useGroupsQuery()
+                ->filterByProposedFlag(array(1,2,4))
+            ->endUse()
+            ->join('Report.Groups')
+            ->withColumn('Groups.IdGroup', 'IdGroup')
+            ->withColumn('Groups.ProposedFlag', 'Flag')
+            ->join('Report.Service')
+            ->withColumn('Service.Name', 'ServiceName')
+            ->filterByIdSource('2')
+            ->find();
+
+        foreach ($pingReports as $query) {
+
+            foreach ($pingdom as $report) {
+
+                if ($query->getServiceName() == $report["hostname"] and $query->getCheckType() == $report["type"]) {
+
+                    $found = 1;
+
+                }
+            }
+
+            if ($found == 0) {
+
+                $removal = GroupsQuery::create()->findPK(array($query->getIdGroup(), $query->getIdReport()));
+                $removal->setProposedFlag('5');
+                $removal->setTimestamp(time());
+                $removal->save();
+
+            }
+
+            $found = 0;
+
+        }
+    }
     
-        
+    function flagResolvedNagios($nagios)
+    {
+
+         $found = 0;
+
+         $nagReports = ReportQuery::create()
+            ->useGroupsQuery()
+                ->filterByProposedFlag(array(1,2))
+            ->endUse()
+            ->join('Report.Groups')
+            ->withColumn('Groups.IdGroup', 'IdGroup')
+            ->withColumn('Groups.ProposedFlag', 'Flag')
+            ->join('Report.Service')
+            ->withColumn('Service.Name', 'ServiceName')
+            ->filterByIdSource('1')
+            ->find();
+
+        foreach ($nagReports as $query) {
+
+            foreach ($nagios as $name => $report) {
+
+                foreach ($report as $service) {
+
+                    if ($query->getServiceName() == $name and $query->getFlag() == $service["state"] and $query->getCheckType() == $service["type"]){
+
+                        $found = 1;
+
+                    }
+                }
+            }
+
+            if ($found == 0) {
+
+                $removal = GroupsQuery::create()->findPK(array($query->getIdGroup(), $query->getIdReport()));
+                $removal->setProposedFlag('5');
+                $removal->setTimestamp(time());
+                $removal->save();
+
+            }
+
+            $found = 0;
+
+        }
     }
     
     function groupReports()
     {
     
         $list = array();
-    
+
         $reports = ReportQuery::create()
-            ->join('Report.Groups')
-            ->where('Report.IdReport = ?', 'Groups.IdReport')
             ->useGroupsQuery()
                 ->filterByProposedFlag(array(1,2,4))
             ->endUse()
-            ->orderByIdService()
+            ->join('Report.Groups')
+            ->withColumn('Groups.IdGroup', 'IdGroup')
             ->find();
 
         foreach ($reports as $report) {
@@ -143,24 +217,22 @@ class Aptostat
             $list[$report->getIdService()][$report->getIdGroup()] = $report->getIdReport();
         
         }
-        
+
         foreach ($list as $group) {
 
             if (count($group) >= 2) {
-            
+
                 $groupMaster = key($group);
-            
+
                 foreach ($group as $key => $value) {
             
                     if ($key != $groupMaster) {
-            
-                        $groupUpdate = GroupsQuery::create()->findOneByIdReport($value);
-                        $groupUpdate->setIdGroup($groupMaster);
-                    
-                        $reportUpdate = ReportQuery::create()->findOneByIdGroup($key);
-                        $reportUpdate->setIdGroup($groupMaster);
-                    
-                        $reportUpdate->save();
+
+                        $prop = Propel::getConnection("Aptostat");
+
+                        $sql = "update Groups set IdGroup=".$groupMaster." where IdReport = ".$value.";";
+                        $stmt = $prop->prepare($sql);
+                        $stmt->execute();
 
                     } 
                 }
