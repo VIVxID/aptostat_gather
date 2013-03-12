@@ -29,12 +29,17 @@ class Mutex
                 //If the timestamp is > 30min, attempt to delete and remake.
                 if (unlink($this->lockFile)) {
 
-                    Logger::writeLog($this->name,"WARNING: Lock expired");
+                    Logger::writeLog($this->name,"WARNING: Lock expired. Deleted.");
 
                     if(!touch($this->lockFile)) {
 
                         Logger::writeLog($this->name,"WARNING: Unable to create lock. Exiting.");
                         return false;
+
+                    } else {
+
+                       Logger::writeLog($this->name,"Rewrote lock.");
+                       return true;
 
                     }
 

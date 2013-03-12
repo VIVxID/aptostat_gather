@@ -52,10 +52,9 @@ class Aptostat
 
             foreach ($report as $service) {
 
-                //Checks the database for matching displayed reports.
+                //Checks the database for matching hidden reports.
                 $matchInvis = GroupsQuery::create()
                     ->useReportQuery()
-                        ->filterByTimestamp($service["statechange"])
                         ->filterByIdSource('1')
                         ->filterByCheckType($service["type"])
                         ->useServiceQuery()
@@ -65,9 +64,8 @@ class Aptostat
                     ->filterByProposedFlag('4')
                     ->findOne();
 
-                //Checks the database for matching hidden reports.
+                //Checks the database for matching displayed reports.
                 $matchVis = ReportQuery::create()
-                    ->filterByTimestamp($service["statechange"])
                     ->useServiceQuery()
                         ->filterByName($name)
                     ->endUse()

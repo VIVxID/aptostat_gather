@@ -14,28 +14,30 @@ require "inc/db.php";
 //Initiate objects
 $apto = new Aptostat();
 $con = new Connect();
-$mutex = new Mutex("pingdom");
+$mutex = new Mutex("fetch");
 
-$mutex->lock();
+if($mutex->lock()){
 
-//Setup authentication and collect from Pingdom.
-$login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
-$pingResult = $con->pingFetch($login[0],$login[1],$login[2]);
+    //Setup authentication and collect from Pingdom.
+    $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
+    $pingResult = $con->pingFetch($login[0],$login[1],$login[2]);
 
-//Collect from Nagios in London and Amsterdam. Intersect and save identical reports.
-$london = $con->nagFetch("lon");
-$amsterdam = $con->nagFetch("ams");
-$nagResult = array_intersect_assoc($london,$amsterdam);
+    //Collect from Nagios in London and Amsterdam. Intersect and save identical reports.
+    $london = $con->nagFetch("lon");
+    $amsterdam = $con->nagFetch("ams");
+    $nagResult = array_intersect_assoc($london,$amsterdam);
 
-//Execute Propel.
-$apto->pingSave($pingResult);
-$apto->nagSave($nagResult);
+    //Execute Propel.
+    $apto->pingSave($pingResult);
+    $apto->nagSave($nagResult);
 
-//Re-flag unreported errors.
-$apto->flagResolvedNagios($nagResult);
-$apto->flagResolvedPingdom($pingResult);
+    //Re-flag unreported errors.
+    $apto->flagResolvedNagios($nagResult);
+    $apto->flagResolvedPingdom($pingResult);
 
-//Perform dynamic grouping of errors on the same systems.
-$apto->groupReports();
+    //Perform dynamic grouping of errors on the same systems.
+    $apto->groupReports();
+
+}
 
 $mutex->unlock();
