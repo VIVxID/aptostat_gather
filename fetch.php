@@ -26,7 +26,8 @@ if($mutex->lock()){
     $london = $con->nagFetch("lon");
     $amsterdam = $con->nagFetch("ams");
     $nagResult = array_intersect_assoc($london,$amsterdam);
-
+var_dump($pingResult);
+var_dump($nagResult);
     //Execute Propel.
     $apto->pingSave($pingResult);
     $apto->nagSave($nagResult);
@@ -34,9 +35,6 @@ if($mutex->lock()){
     //Re-flag unreported errors.
     $apto->flagResolvedNagios($nagResult);
     $apto->flagResolvedPingdom($pingResult);
-
-    //Perform dynamic grouping of errors on the same systems.
-    $apto->groupReports();
 
 }
 

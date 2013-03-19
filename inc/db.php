@@ -15,19 +15,18 @@ class Aptostat
                     ->filterByName($report["hostname"])
                 ->endUse()
                 ->filterByIdSource('2')
-                ->useGroupsQuery()
-                    ->filterByProposedFlag('2')
-                ->endUse()
+                ->join('Report.ReportStatus')
+		->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+                ->withColumn('ReportStatus.IdFlag', 'Flag')
                 ->filterByCheckType($report["type"])
-                ->filterByErrorMessage($report["status"])
                 ->findOne();
 
             //If a reported error does not already exist in the database, save it.
-            if (is_null($match)) {
+            if (is_null($match) or $match->getFlag() == 6) {
 
-                $group = new Groups();
-                $group->setProposedFlag('2');
-                $group->setTimestamp(time());
+                $flag = new ReportStatus();
+                $flag->setIdFlag('2');
+                $flag->setTimestamp(time());
 
                 $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
 
@@ -37,9 +36,10 @@ class Aptostat
                 $entry->setCheckType($report["type"]);
                 $entry->setIdSource('2');
                 $entry->setIdService($serv->getIdService());
-                $entry->addGroups($group);
-
                 $entry->save();
+
+                $flag->setIdReport($entry->getIdReport());
+                $flag->save();
 
             }
         }
@@ -52,49 +52,26 @@ class Aptostat
 
             foreach ($report as $service) {
 
-                //Checks the database for matching hidden reports.
-                $matchInvis = GroupsQuery::create()
-                    ->useReportQuery()
-                        ->filterByIdSource('1')
-                        ->filterByCheckType($service["type"])
-                        ->useServiceQuery()
-                            ->filterByName($name)
-                        ->endUse()
-                    ->endUse()
-                    ->filterByProposedFlag('4')
-                    ->findOne();
-
-                //Checks the database for matching displayed reports.
-                $matchVis = ReportQuery::create()
+                //Checks the database for matching reports.
+                $match = ReportQuery::create()
                     ->useServiceQuery()
                         ->filterByName($name)
                     ->endUse()
                     ->filterByIdSource('1')
+                    ->join('Report.ReportStatus')
+                    ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+                    ->withColumn('ReportStatus.IdFlag', 'Flag')
                     ->filterByCheckType($service["type"])
                     ->findOne();
 
-                //If a matching report is found as hidden, make it visible.
-                if (!is_null($matchInvis)) {
+                //If no matching report is found, create it.
+                if (is_null($match) or $match->getFlag() == 6) {
 
-                    $group = GroupsQuery::create()->findPK(array($matchInvis->getIdGroup(),$matchInvis->getIdReport()));
-                    $group->setProposedFlag($service["state"]);
-                    $group->setTimestamp(time());
-                    $group->save();
-
-                //If no matching report is found, create as hidden.
-                } elseif (is_null($matchVis)) {
-
-                    $group = new Groups();
-                    $group->setProposedFlag('4');
-                    $group->setTimestamp(time());
+                    $flag = new ReportStatus();
+                    $flag->setIdFlag($match->getFlag());
+                    $flag->setTimestamp(time());
 
                     $serv = ServiceQuery::create()->findOneByName($name);
-
-                    foreach ($serv as $tmp) {
-
-                        $servId = $tmp->getIdService();
-
-                    }
 
                     $entry = new Report();
                     $entry->setErrorMessage($service["output"]);
@@ -102,9 +79,10 @@ class Aptostat
                     $entry->setCheckType($service["type"]);
                     $entry->setIdSource('1');
                     $entry->setIdService($serv->getIdService());
-                    $entry->addGroups($group);
-
                     $entry->save();
+
+                    $flag->setIdReport($entry->getIdReport());
+                    $flag->save();
 
                 }
             }
@@ -118,12 +96,9 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $pingReports = ReportQuery::create()
-            ->useGroupsQuery()
-                ->filterByProposedFlag(array(1,2,4))
-            ->endUse()
-            ->join('Report.Groups')
-            ->withColumn('Groups.IdGroup', 'IdGroup')
-            ->withColumn('Groups.ProposedFlag', 'Flag')
+            ->join('Report.ReportStatus')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->filterByIdSource('2')
@@ -142,12 +117,21 @@ class Aptostat
                 }
             }
 
-            if ($found == 0) {
+            if ($found == 0 and $query->getFlag() == 2) {
 
-                $removal = GroupsQuery::create()->findPK(array($query->getIdGroup(), $query->getIdReport()));
-                $removal->setProposedFlag('5');
-                $removal->setTimestamp(time());
-                $removal->save();
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag('5');
+                $update->setTimestamp(time());
+                $update->save();
+
+            } elseif ($found == 1 and $query->getFlag() == 5) {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag('2');
+                $update->setTimestamp(time());
+                $update->save();
 
             }
 
@@ -163,12 +147,9 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $nagReports = ReportQuery::create()
-            ->useGroupsQuery()
-                ->filterByProposedFlag(array(1,2))
-            ->endUse()
-            ->join('Report.Groups')
-            ->withColumn('Groups.IdGroup', 'IdGroup')
-            ->withColumn('Groups.ProposedFlag', 'Flag')
+            ->join('Report.ReportStatus')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->filterByIdSource('1')
@@ -183,7 +164,7 @@ class Aptostat
 
                 foreach ($report as $service) {
 
-                    if ($query->getServiceName() == $name and $query->getFlag() == $service["state"] and $query->getCheckType() == $service["type"]){
+                    if ($query->getServiceName() == $name and $query->getCheckType() == $service["type"]){
 
                         $found = 1;
 
@@ -191,62 +172,27 @@ class Aptostat
                 }
             }
 
-            if ($found == 0) {
+            if ($found == 0 and $query->getFlag() != 5) {
 
-                $removal = GroupsQuery::create()->findPK(array($query->getIdGroup(), $query->getIdReport()));
-                $removal->setProposedFlag('5');
-                $removal->setTimestamp(time());
-                $removal->save();
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag('5');
+                $update->setTimestamp(time());
+                $update->save();
+
+            } elseif ($found == 1 and $query->getFlag() != $service["state"]) {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag($service["state"]);
+                $update->setTimestamp(time());
+                $update->save();
+
 
             }
 
             $found = 0;
 
-        }
-    }
-
-    function groupReports()
-    {
-
-        $list = array();
-
-        //Fetch a list of all unresolved reports.
-        $reports = ReportQuery::create()
-            ->useGroupsQuery()
-                ->filterByProposedFlag(array(1,2,4))
-            ->endUse()
-            ->join('Report.Groups')
-            ->withColumn('Groups.IdGroup', 'IdGroup')
-            ->find();
-
-        //Build an array with the fetched reports grouped by hostname.
-        foreach ($reports as $report) {
-
-            $list[$report->getIdService()][$report->getIdGroup()] = $report->getIdReport();
-
-        }
-
-        //If a given host has more than two unresolved reports, they are given the same group ID.
-        foreach ($list as $group) {
-
-            if (count($group) >= 2) {
-
-                $groupMaster = key($group);
-
-                foreach ($group as $key => $value) {
-
-                    if ($key != $groupMaster) {
-
-                        //Propel does not like to update primary keys. Using custom SQL as a workaround.
-                        $prop = Propel::getConnection("Aptostat");
-
-                        $sql = "update Groups set IdGroup=".$groupMaster." where IdReport = ".$value.";";
-                        $stmt = $prop->prepare($sql);
-                        $stmt->execute();
-
-                    }
-                }
-            }
         }
     }
 }
