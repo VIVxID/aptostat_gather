@@ -5,7 +5,7 @@ require_once '/var/www/vendor/propel/propel1/runtime/lib/Propel.php';
 Propel::init("/var/www/build/conf/aptostat-conf.php");
 set_include_path("/var/www/build/classes" . PATH_SEPARATOR . get_include_path());
 
-//Logfile located in log/pingdom.log
+//Includes.
 require "inc/log_tool.php";
 require "inc/connect.php";
 require "inc/mutex.php";
@@ -26,13 +26,12 @@ if($mutex->lock()){
     $london = $con->nagFetch("lon");
     $amsterdam = $con->nagFetch("ams");
     $nagResult = array_intersect_assoc($london,$amsterdam);
-var_dump($pingResult);
-var_dump($nagResult);
+
     //Execute Propel.
     $apto->pingSave($pingResult);
     $apto->nagSave($nagResult);
 
-    //Re-flag unreported errors.
+    //Check to see if any reports should be updated.
     $apto->flagResolvedNagios($nagResult);
     $apto->flagResolvedPingdom($pingResult);
 

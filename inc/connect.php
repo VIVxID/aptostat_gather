@@ -11,10 +11,10 @@ class Connect
 
         $errors = array();
 
-        //Init curl
+        //Init curl.
         $curl = curl_init();
 
-        //Setup curl
+        //Setup curl.
         $options = array(
             CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
             CURLOPT_CUSTOMREQUEST => "GET",
@@ -26,7 +26,7 @@ class Connect
 
         curl_setopt_array($curl,$options);
 
-        //Excecute and save result as an assoc-array
+        //Excecute and save result as an associative array.
         $response = json_decode(curl_exec($curl),true);
 
         if (isset($response["error"])) {
@@ -34,7 +34,7 @@ class Connect
             exit();
         }
 
-        //Filter out all checks where status == "up"
+        //Filter out all checks where status == "up".
         $checkList = $response["checks"];
 
         foreach ($checkList as $check) {
@@ -49,13 +49,13 @@ class Connect
 
     function nagFetch($country)
     {
-        //Init
+        //Init.
         $curl = curl_init();
         $tmpError = 0;
         $tmpErrors = array();
         $errors = array();
 
-        //Setting curl options
+        //Setting curl options.
         $options = array(
             CURLOPT_URL => "http://nagios.".$country.".aptoma.no:8080/state",
             CURLOPT_CUSTOMREQUEST => "GET",
@@ -63,17 +63,17 @@ class Connect
         );
         curl_setopt_array($curl,$options);
 
-        //Executing curl, decoding JSON into an associative array
+        //Executing curl, decoding JSON into an associative array.
         $response = json_decode(curl_exec($curl),true);
         $checkList = $response["content"];
 
-        //Go through each host/server/entity in sequence
+        //Go through each host/server/entity in sequence.
         foreach ($checkList as $checkName => $check) {
 
-            //Check every service (ping, SSH, free disk space, free memory etc) on a given host for errors
+            //Check every service (ping, SSH, free disk space, free memory etc) on a given host for errors.
             foreach ($check["services"] as $name => $service) {
 
-                //If an error is found, add information about it to a temporary array
+                //If an error is found, add information about it to a temporary array.
                 if ($service["current_state"] != "0") {
 
                     $tmpError = 1;
@@ -86,7 +86,7 @@ class Connect
                 }
             }
 
-            //If an error was found, dump the temporary array into another array named after the host
+            //If an error was found, dump the temporary array into another array named after the host.
             if ($tmpError == 1) {
                     foreach ($tmpErrors as $tmp) {
                         $errors[$checkName][] = $tmp;

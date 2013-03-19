@@ -104,8 +104,7 @@ class Aptostat
             ->filterByIdSource('2')
             ->find();
 
-        //Compare unresolved reports with the checklist recieved from Pingdom. If Pingdom
-        //is no longer reporting an error on the system, flag it as resolved.
+        //Compare unresolved reports with the checklist recieved from Pingdom.
         foreach ($pingReports as $query) {
 
             foreach ($pingdom as $report) {
@@ -117,6 +116,7 @@ class Aptostat
                 }
             }
 
+            //If a matching report is not found and the newest status is an error, flag as responding.
             if ($found == 0 and $query->getFlag() == 2) {
 
                 $update = new ReportStatus();
@@ -125,6 +125,7 @@ class Aptostat
                 $update->setTimestamp(time());
                 $update->save();
 
+            //If a matching report is found and the newest status is responding, flag as an error.
             } elseif ($found == 1 and $query->getFlag() == 5) {
 
                 $update = new ReportStatus();
@@ -156,8 +157,7 @@ class Aptostat
             ->find();
 
 
-        //Compare unresolved reports with the checklist recieved from Nagios. If Nagios
-        //is no longer reporting an error on the system, flag it as resolved.
+        //Compare unresolved reports with the checklist recieved from Nagios.
         foreach ($nagReports as $query) {
 
             foreach ($nagios as $name => $report) {
@@ -172,6 +172,7 @@ class Aptostat
                 }
             }
 
+            //If a matching report is not found and the newest status is not responding, set as responding.
             if ($found == 0 and $query->getFlag() != 5) {
 
                 $update = new ReportStatus();
@@ -180,6 +181,8 @@ class Aptostat
                 $update->setTimestamp(time());
                 $update->save();
 
+            //If a matching report is found and the newest status does not match the information from Nagios,
+            //update the status.
             } elseif ($found == 1 and $query->getFlag() != $service["state"]) {
 
                 $update = new ReportStatus();
