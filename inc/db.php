@@ -60,7 +60,7 @@ class Aptostat
                     ->filterByIdSource('1')
                     ->join('Report.ReportStatus')
                     ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
-                    ->withColumn('ReportStatus.IdFlag', 'Flag')
+                    ->withColumn('ReportStatus.IdFlag', 'IdFlag')
                     ->filterByCheckType($service["type"])
                     ->findOne();
 
@@ -68,7 +68,7 @@ class Aptostat
                 if (is_null($match) or $match->getFlag() == 6) {
 
                     $flag = new ReportStatus();
-                    $flag->setIdFlag($match->getFlag());
+                    $flag->setIdFlag($service["state"]);
                     $flag->setTimestamp(time());
 
                     $serv = ServiceQuery::create()->findOneByName($name);
