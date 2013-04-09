@@ -21,7 +21,7 @@ class Aptostat
                 ->filterByCheckType($report["type"])
                 ->findOne();
 
-            //If a reported error does not already exist in the database, save it.
+            //If no matching report was found, create it.
             if (is_null($match) or $match->getFlag() == 6) {
 
                 $flag = new ReportStatus();
@@ -64,7 +64,7 @@ class Aptostat
                     ->filterByCheckType($service["type"])
                     ->findOne();
 
-                //If no matching report is found, create it.
+                //If no matching report was found, create it.
                 if (is_null($match) or $match->getFlag() == 6) {
 
                     $flag = new ReportStatus();
@@ -104,7 +104,7 @@ class Aptostat
             ->filterByIdSource('2')
             ->find();
 
-        //Compare unresolved reports with the checklist recieved from Pingdom.
+        //Compare unresolved reports with the checklist received from Pingdom.
         foreach ($pingReports as $query) {
 
             foreach ($pingdom as $report) {
@@ -157,7 +157,7 @@ class Aptostat
             ->find();
 
 
-        //Compare unresolved reports with the checklist recieved from Nagios.
+        //Compare unresolved reports with the checklist received from Nagios.
         foreach ($nagReports as $query) {
 
             foreach ($nagios as $name => $report) {
