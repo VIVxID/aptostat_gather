@@ -1,5 +1,11 @@
 <?php
-
+/*
+ *  This file generates SQL-code for populating the database based
+ *  on current information from Pingdom and Nagios. If servers or checks
+ *  are added to either system, excecute this file to generate new SQL and
+ *  run it at the database to update the service list. The generated SQL will
+ *  not remove hosts that no longer exist.
+ */
 $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
 $fil = fopen("populate.sql","a+");
 
@@ -21,6 +27,7 @@ $checkList = $response["checks"];
 
 foreach ($checkList as $check) {
 
+    // Hostnames are set to be unique, to ensure hosts only get saved once.
     fwrite($fil,"INSERT IGNORE INTO Service (Name) VALUES ('".$check["hostname"]."');\n");
 
 }
