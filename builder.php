@@ -5,6 +5,7 @@ $fil = fopen("populate.sql","a+");
 
 $curl = curl_init();
 
+//OBS: Bytt ut loginvariablene med user, password og app key.
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
     CURLOPT_CUSTOMREQUEST => "GET",
@@ -15,7 +16,6 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
-//Excecute and save result as an associative array.
 $response = json_decode(curl_exec($curl),true);
 $checkList = $response["checks"];
 
@@ -35,7 +35,6 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
-//Executing curl, decoding JSON into an associative array.
 $response = json_decode(curl_exec($curl),true);
 $checkList = $response["content"];
 

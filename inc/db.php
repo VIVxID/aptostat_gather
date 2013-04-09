@@ -98,6 +98,7 @@ class Aptostat
         $pingReports = ReportQuery::create()
             ->join('Report.ReportStatus')
             ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
             ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
@@ -134,6 +135,14 @@ class Aptostat
                 $update->setTimestamp(time());
                 $update->save();
 
+            } elseif ($found == 0 and $query->getFlag() == 5 and $query->getTimestamp() < (time()-86400)) {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag('6');
+                $update->setTimestamp(time());
+                $update->save();
+
             }
 
             $found = 0;
@@ -150,6 +159,7 @@ class Aptostat
         $nagReports = ReportQuery::create()
             ->join('Report.ReportStatus')
             ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
             ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
@@ -188,6 +198,14 @@ class Aptostat
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
                 $update->setIdFlag($service["state"]);
+                $update->setTimestamp(time());
+                $update->save();
+
+            } elseif ($found = 0 and $query->getFlag() == 5 and $query->getTimestamp() < (time()-86400 )) {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setIdFlag('6');
                 $update->setTimestamp(time());
                 $update->save();
 
