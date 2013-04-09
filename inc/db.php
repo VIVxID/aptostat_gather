@@ -15,14 +15,15 @@ class Aptostat
                     ->filterByName($report["hostname"])
                 ->endUse()
                 ->filterByIdSource('2')
-                ->join('Report.ReportStatus')
-		->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
-                ->withColumn('ReportStatus.IdFlag', 'Flag')
                 ->filterByCheckType($report["type"])
+                ->join('Report.ReportStatus')
+		->where('ReportStatus.Timestamp IN (SELECT MAX(ReportStatus.Timestamp) FROM ReportStatus)')
+                ->withColumn('ReportStatus.Timestamp', 'StatusTime')
+                ->withColumn('ReportStatus.IdFlag', 'Flag')
                 ->findOne();
 
             //If no matching report was found, create it.
-            if (is_null($match) or $match->getFlag() == 6) {
+            if (is_null($match)) {
 
                 $flag = new ReportStatus();
                 $flag->setIdFlag('2');
@@ -57,11 +58,11 @@ class Aptostat
                     ->useServiceQuery()
                         ->filterByName($name)
                     ->endUse()
+                    ->filterByCheckType($service["type"])
                     ->filterByIdSource('1')
                     ->join('Report.ReportStatus')
-                    ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+                    ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
                     ->withColumn('ReportStatus.IdFlag', 'Flag')
-                    ->filterByCheckType($service["type"])
                     ->findOne();
 
                 //If no matching report was found, create it.
@@ -96,13 +97,13 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $pingReports = ReportQuery::create()
-            ->join('Report.ReportStatus')
-            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
-            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
-            ->withColumn('ReportStatus.IdFlag', 'Flag')
+            ->filterByIdSource('2')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
-            ->filterByIdSource('2')
+            ->join('Report.ReportStatus')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
+            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
+            ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->find();
 
         //Compare unresolved reports with the checklist received from Pingdom.
@@ -157,13 +158,13 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $nagReports = ReportQuery::create()
-            ->join('Report.ReportStatus')
-            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
-            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
-            ->withColumn('ReportStatus.IdFlag', 'Flag')
+            ->filterByIdSource('1')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
-            ->filterByIdSource('1')
+            ->join('Report.ReportStatus')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
+            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
+            ->withColumn('ReportStatus.IdFlag', 'Flag')
             ->find();
 
 

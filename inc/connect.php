@@ -28,7 +28,7 @@ class Connect
 
         //Filter out all checks where status == "up".
         $checkList = $response["checks"];
-var_dump($checkList);
+
         foreach ($checkList as $check) {
 
             if ($check["status"]  != "up") {
