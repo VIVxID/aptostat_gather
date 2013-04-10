@@ -5,6 +5,8 @@ set_include_path("/var/wwwApi/build/classes" . PATH_SEPARATOR . get_include_path
 
 $login = file('/var/apto/ping', FILE_IGNORE_NEW_LINES);
 $curl = curl_init();
+$m = new \Memcached();
+$m->addServer("localhost",11211);
 
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
