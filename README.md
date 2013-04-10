@@ -7,3 +7,4 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 - Memcached
 
 Aptostat_gather relies on the database schema which is used in Aptostat_api
+Follow the instructions in Apostat_api
