@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 require_once '/var/www/vendor/propel/propel1/runtime/lib/Propel.php';
 Propel::init("/var/www/build/conf/aptostat-conf.php");
@@ -10,7 +9,7 @@ require "inc/db.php";
 
 $apto = new Aptostat();
 $con = new Connect();
-$mutex = new Mutex("fetch");
+$mutex = new Mutex("collectReports");
 
 if($mutex->lock()){
 
@@ -24,12 +23,12 @@ if($mutex->lock()){
     $nagResult = array_intersect_assoc($london,$amsterdam);
 
     //Execute Propel.
-    $apto->pingSave($pingResult);
-    $apto->nagSave($nagResult);
+    $apto->saveNagios($nagResult);
+    $apto->savePingdom($pingResult);
 
     //Check to see if any reports should be updated.
-    $apto->flagResolvedNagios($nagResult);
-    $apto->flagResolvedPingdom($pingResult);
+    $apto->updateNagios($nagResult);
+    $apto->updatePingdom($pingResult);
 
 }
 

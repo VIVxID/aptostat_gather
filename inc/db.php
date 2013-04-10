@@ -4,7 +4,7 @@
 class Aptostat
 {
 
-    function pingSave($pingResult)
+    function savePingdom($pingResult)
     {
 
         foreach ($pingResult as $report) {
@@ -46,7 +46,7 @@ class Aptostat
         }
     }
 
-    function nagSave($nagResult)
+    function saveNagios($nagResult)
     {
 
         foreach ($nagResult as $name => $report) {
@@ -90,7 +90,7 @@ class Aptostat
         }
     }
 
-    function flagResolvedPingdom($pingdom)
+    function updatePingdom($pingdom)
     {
 
         $found = 0;
@@ -151,7 +151,7 @@ class Aptostat
         }
     }
 
-    function flagResolvedNagios($nagios)
+    function updateNagios($nagios)
     {
 
         $found = 0;
