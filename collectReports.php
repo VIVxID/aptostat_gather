@@ -15,11 +15,11 @@ if($mutex->lock()){
 
     //Setup authentication and collect from Pingdom.
     $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
-    $pingResult = $con->pingFetch($login[0],$login[1],$login[2]);
+    $pingResult = $con->collectPingdom($login[0],$login[1],$login[2]);
 
     //Collect from Nagios in London and Amsterdam. Intersect and save identical reports.
-    $london = $con->nagFetch("lon");
-    $amsterdam = $con->nagFetch("ams");
+    $london = $con->collectNagios("lon");
+    $amsterdam = $con->collectNagios("ams");
     $nagResult = array_intersect_assoc($london,$amsterdam);
 
     //Execute Propel.

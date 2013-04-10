@@ -20,7 +20,6 @@ class Mutex
 
         }
 
-
         if (file_exists($this->lockFile)) {
 
             return false;

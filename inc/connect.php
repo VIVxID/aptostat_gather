@@ -4,7 +4,7 @@
 class Connect
 {
 
-    public function pingFetch($user,$pass,$key)
+    public function collectPingdom($user,$pass,$key)
     {
 
         $errors = array();
@@ -37,7 +37,7 @@ class Connect
     return $errors;
     }
 
-    function nagFetch($country)
+    function collectNagios($country)
     {
 
         $curl = curl_init();

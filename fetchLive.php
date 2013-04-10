@@ -7,14 +7,14 @@ $login = file('/var/apto/ping', FILE_IGNORE_NEW_LINES);
 $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);
+$out = array();
 
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
     CURLOPT_CUSTOMREQUEST => "GET",
     CURLOPT_USERPWD => $login[0].":".$login[1],
     CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
-    CURLOPT_RETURNTRANSFER => true
-);
+    CURLOPT_RETURNTRANSFER => true);
 
 // Execute
 curl_setopt_array($curl,$options);
