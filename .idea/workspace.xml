@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/collectReports.php" afterPath="$PROJECT_DIR$/collectReports.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fetchLive.php" afterPath="$PROJECT_DIR$/fetchLive.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fetchUptime.php" afterPath="$PROJECT_DIR$/fetchUptime.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inc/mutex.php" afterPath="$PROJECT_DIR$/inc/mutex.php" />
     </list>
     <ignored path="aptostat_gather.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365581828094" ignored="false" />
-    <file path="/mutex.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365504597277" ignored="false" />
+    <file path="/mutex.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365593360125" ignored="false" />
     <file path="$PROJECT_DIR$/../aptostat_api/src/aptostatApi/model/Live.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365583000426" ignored="false" />
     <file path="/fetchLive.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365582891835" ignored="false" />
     <file path="/Live.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365582970098" ignored="false" />
@@ -33,19 +31,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="collectReports.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/collectReports.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="29" selection-start="166" selection-end="166" vertical-scroll-proportion="-1.9615384">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fetchLive.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="fetchLive.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fetchLive.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="29" selection-start="166" selection-end="166" vertical-scroll-proportion="0.057367828">
+            <state line="3" column="29" selection-start="166" selection-end="166" vertical-scroll-proportion="-1.9615384">
               <folding />
             </state>
           </provider>
@@ -87,10 +76,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mutex.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="mutex.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/inc/mutex.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="18" selection-start="62" selection-end="62" vertical-scroll-proportion="-2.1538463">
+            <state line="18" column="25" selection-start="266" selection-end="266" vertical-scroll-proportion="0.31158605">
               <folding />
             </state>
           </provider>
@@ -115,7 +104,6 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/builder.php" />
-        <option value="$PROJECT_DIR$/inc/mutex.php" />
         <option value="$PROJECT_DIR$/inc/db.php" />
         <option value="$PROJECT_DIR$/fetch.php" />
         <option value="$PROJECT_DIR$/fetchPingdom.php" />
@@ -124,6 +112,7 @@
         <option value="$PROJECT_DIR$/fetchLive.php" />
         <option value="$PROJECT_DIR$/collectReports.php" />
         <option value="$PROJECT_DIR$/fetchUptime.php" />
+        <option value="$PROJECT_DIR$/inc/mutex.php" />
       </list>
     </option>
   </component>
@@ -375,13 +364,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/inc/mutex.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="18" selection-start="62" selection-end="62" vertical-scroll-proportion="-2.1538463">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/inc/db.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="27" column="28" selection-start="878" selection-end="879" vertical-scroll-proportion="-17.653847">
@@ -405,7 +387,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fetchLive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="29" selection-start="166" selection-end="166" vertical-scroll-proportion="0.057367828">
+        <state line="3" column="29" selection-start="166" selection-end="166" vertical-scroll-proportion="-1.9615384">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/inc/mutex.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="25" selection-start="266" selection-end="266" vertical-scroll-proportion="0.31158605">
           <folding />
         </state>
       </provider>

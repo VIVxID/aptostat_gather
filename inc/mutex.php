@@ -14,6 +14,13 @@ class Mutex
     function lock()
     {
 
+        if (!file_exists("tmp/")) {
+
+            mkdir("tmp");
+
+        }
+
+
         if (file_exists($this->lockFile)) {
 
             return false;
