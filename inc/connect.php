@@ -1,7 +1,5 @@
 <?php
-//
-//Gathering from Pingdom/Nagios
-//
+//Connection to Pingdom&Nagios
 
 class Connect
 {
