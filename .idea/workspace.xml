@@ -7,13 +7,13 @@
     </list>
     <ignored path="aptostat_gather.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365684625196" ignored="false" />
+    <file path="/Dummy.txt" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365685376050" ignored="false" />
     <file path="/mutex.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365593360125" ignored="false" />
     <file path="$PROJECT_DIR$/../aptostat_api/src/aptostatApi/model/Live.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365664369641" ignored="false" />
     <file path="/fetchLive.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365628016157" ignored="false" />
     <file path="/Live.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365582970098" ignored="false" />
     <file path="$PROJECT_DIR$/../aptostat_api/src/aptostatApi/model/Uptime.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365664369641" ignored="false" />
-    <file path="/fetchUptime.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365684853505" ignored="false" />
+    <file path="/fetchUptime.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365685403649" ignored="false" />
     <file path="$PROJECT_DIR$/../aptostat_gui/admin_front.php" changelist="3ed0c3a8-6680-40a4-b1d7-8012e8d8b642" time="1365664452762" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +46,7 @@
       <file leaf-file-name="fetchUptime.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/fetchUptime.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="64" selection-start="1390" selection-end="1390" vertical-scroll-proportion="0.7122708">
+            <state line="42" column="58" selection-start="1384" selection-end="1384" vertical-scroll-proportion="0.7122708">
               <folding />
             </state>
           </provider>
@@ -82,7 +82,7 @@
       <file leaf-file-name="mutex.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/inc/mutex.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="203" selection-end="203" vertical-scroll-proportion="-0.65384614">
+            <state line="15" column="0" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -152,6 +152,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -186,7 +187,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -194,8 +194,8 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="vcs.Git" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -242,7 +242,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22654155" sideWeight="0.6705632" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22989276" sideWeight="0.6705632" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -420,14 +420,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/inc/mutex.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="203" selection-end="203" vertical-scroll-proportion="-0.65384614">
+        <state line="15" column="0" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fetchUptime.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="64" selection-start="1390" selection-end="1390" vertical-scroll-proportion="0.7122708">
+        <state line="42" column="58" selection-start="1384" selection-end="1384" vertical-scroll-proportion="0.7122708">
           <folding />
         </state>
       </provider>
