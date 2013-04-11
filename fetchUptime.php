@@ -40,7 +40,7 @@ foreach ($hosts as $hostName => $hostID) {
 
         if ($check["status"] != "up") {
 
-            $out[$hostName][date("D d",$check["timefrom"])] = $check["timeto"] - $check["timefrom"];
+            $out[$hostName][date("D d",$check["timefrom"])][] = $check["timeto"] - $check["timefrom"];
 
         }
     }
