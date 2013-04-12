@@ -25,7 +25,7 @@ foreach ($hosts as $hostName => $hostID) {
     $out[$hostName] = array();
 
     $options = array(
-        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID",
+        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID?to=" . time() . "&from=" . time()-31536000,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_USERPWD => $login[0].":".$login[1],
         CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
