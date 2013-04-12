@@ -4,7 +4,7 @@ Propel::init("/var/wwwApi/build/conf/aptostat-conf.php");
 set_include_path("/var/wwwApi/build/classes" . PATH_SEPARATOR . get_include_path());
 
 $login = file('/var/apto/ping', FILE_IGNORE_NEW_LINES);
-$curl = curl_init();
+$curl = curl_init("https://api.pingdom.com/api/2.0/summary.outage/$hostID?to=" . time() . "&from=" . time()-31536000);
 $m = new \Memcached();
 $m->addServer("localhost",11211);
 $out = array();
@@ -25,7 +25,6 @@ foreach ($hosts as $hostName => $hostID) {
     $out[$hostName] = array();
 
     $options = array(
-        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID?to=" . time() . "&from=" . time()-31536000,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_USERPWD => $login[0].":".$login[1],
         CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
