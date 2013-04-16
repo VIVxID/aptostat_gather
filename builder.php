@@ -50,14 +50,3 @@ foreach ($checkList as $checkName => $check) {
      fwrite($fil,"INSERT IGNORE INTO Service (Name) VALUES ('".$checkName."');\n");
 
 }
-
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('1', 'Warning');\n");
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('2', 'Critical');\n");
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('3', 'Internal');\n");
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('4', 'Ignored');\n");
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('5', 'Responding');\n");
-fwrite($fil,"INSERT IGNORE INTO Flag (IdFlag, Name) VALUES ('6', 'Resolved');\n");
-
-fwrite($fil,"INSERT IGNORE INTO Source (IdSource, Name) VALUES ('1', 'Nagios');\n");
-fwrite($fil,"INSERT IGNORE INTO Source (IdSource, Name) VALUES ('2', 'Pingdom');\n");
-
