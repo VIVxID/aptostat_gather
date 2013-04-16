@@ -14,7 +14,7 @@ class Aptostat
                 ->useServiceQuery()
                     ->filterByName($report["hostname"])
                 ->endUse()
-                ->filterBySource('Pingdom')
+                ->filterBySource('PINGDOM')
                 ->filterByCheckType($report["type"])
                 ->join('Report.ReportStatus')
 		        ->where('ReportStatus.Timestamp IN (SELECT MAX(ReportStatus.Timestamp) FROM ReportStatus)')
@@ -32,7 +32,7 @@ class Aptostat
                 }
 
                 $flag = new ReportStatus();
-                $flag->setIdFlag($pingdomStatus);
+                $flag->setFlag($pingdomStatus);
                 $flag->setTimestamp(time());
 
                 $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
@@ -41,7 +41,7 @@ class Aptostat
                 $entry->setErrorMessage($report["status"]);
                 $entry->setTimestamp($report["lasterrortime"]);
                 $entry->setCheckType($report["type"]);
-                $entry->setSource('Pingdom');
+                $entry->setSource('PINGDOM');
                 $entry->setIdService($serv->getIdService());
                 $entry->save();
 
@@ -65,7 +65,7 @@ class Aptostat
                         ->filterByName($name)
                     ->endUse()
                     ->filterByCheckType($service["type"])
-                    ->filterBySource('Nagios')
+                    ->filterBySource('NAGIOS')
                     ->join('Report.ReportStatus')
                     ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
                     ->withColumn('ReportStatus.Flag', 'Flag')
@@ -81,7 +81,7 @@ class Aptostat
                     }
 
                     $flag = new ReportStatus();
-                    $flag->setIdFlag($nagiosStatus);
+                    $flag->setFlag($nagiosStatus);
                     $flag->setTimestamp(time());
 
                     $serv = ServiceQuery::create()->findOneByName($name);
@@ -90,7 +90,7 @@ class Aptostat
                     $entry->setErrorMessage($service["output"]);
                     $entry->setTimestamp($service["statechange"]);
                     $entry->setCheckType($service["type"]);
-                    $entry->setSource('Nagios');
+                    $entry->setSource('NAGIOS');
                     $entry->setIdService($serv->getIdService());
                     $entry->save();
 
@@ -109,7 +109,7 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $pingReports = ReportQuery::create()
-            ->filterBySource('Pingdom')
+            ->filterBySource('PINGDOM')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
@@ -160,7 +160,7 @@ class Aptostat
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('RESOLVED');
+                $update->setFlag('RESOLVED');
                 $update->setTimestamp(time());
                 $update->save();
 
@@ -178,7 +178,7 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $nagReports = ReportQuery::create()
-            ->filterByIdSource('NAGIOS')
+            ->filterBySource('NAGIOS')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
@@ -208,7 +208,7 @@ class Aptostat
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('RESPONDING');
+                $update->setFlag('RESPONDING');
                 $update->setTimestamp(time());
                 $update->save();
 
@@ -223,7 +223,7 @@ class Aptostat
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag($nagiosStatus);
+                $update->setFlag($nagiosStatus);
                 $update->setTimestamp(time());
                 $update->save();
 
@@ -233,7 +233,7 @@ class Aptostat
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('RESOLVED');
+                $update->setFlag('RESOLVED');
                 $update->setTimestamp(time());
                 $update->save();
 
