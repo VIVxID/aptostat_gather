@@ -14,19 +14,25 @@ class Aptostat
                 ->useServiceQuery()
                     ->filterByName($report["hostname"])
                 ->endUse()
-                ->filterByIdSource('2')
+                ->filterBySource('Pingdom')
                 ->filterByCheckType($report["type"])
                 ->join('Report.ReportStatus')
-		->where('ReportStatus.Timestamp IN (SELECT MAX(ReportStatus.Timestamp) FROM ReportStatus)')
+		        ->where('ReportStatus.Timestamp IN (SELECT MAX(ReportStatus.Timestamp) FROM ReportStatus)')
                 ->withColumn('ReportStatus.Timestamp', 'StatusTime')
-                ->withColumn('ReportStatus.IdFlag', 'Flag')
+                ->withColumn('ReportStatus.Flag', 'Flag')
                 ->findOne();
 
             //If no matching report was found, create it.
             if (is_null($match)) {
 
+                if($report["status"] == "down") {
+                    $pingdomStatus = "CRITICAL";
+                } else {
+                    $pingdomStatus = "WARNING";
+                }
+
                 $flag = new ReportStatus();
-                $flag->setIdFlag('2');
+                $flag->setIdFlag($pingdomStatus);
                 $flag->setTimestamp(time());
 
                 $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
@@ -35,7 +41,7 @@ class Aptostat
                 $entry->setErrorMessage($report["status"]);
                 $entry->setTimestamp($report["lasterrortime"]);
                 $entry->setCheckType($report["type"]);
-                $entry->setIdSource('2');
+                $entry->setSource('Pingdom');
                 $entry->setIdService($serv->getIdService());
                 $entry->save();
 
@@ -59,17 +65,23 @@ class Aptostat
                         ->filterByName($name)
                     ->endUse()
                     ->filterByCheckType($service["type"])
-                    ->filterByIdSource('1')
+                    ->filterBySource('Nagios')
                     ->join('Report.ReportStatus')
                     ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
-                    ->withColumn('ReportStatus.IdFlag', 'Flag')
+                    ->withColumn('ReportStatus.Flag', 'Flag')
                     ->findOne();
 
                 //If no matching report was found, create it.
                 if (is_null($match) or $match->getFlag() == 6) {
 
+                    if ($service["state"] == '2') {
+                        $nagiosStatus = "CRITICAL";
+                    } elseif ($service["state"] == '1'){
+                        $nagiosStatus = "WARNING";
+                    }
+
                     $flag = new ReportStatus();
-                    $flag->setIdFlag($service["state"]);
+                    $flag->setIdFlag($nagiosStatus);
                     $flag->setTimestamp(time());
 
                     $serv = ServiceQuery::create()->findOneByName($name);
@@ -78,7 +90,7 @@ class Aptostat
                     $entry->setErrorMessage($service["output"]);
                     $entry->setTimestamp($service["statechange"]);
                     $entry->setCheckType($service["type"]);
-                    $entry->setIdSource('1');
+                    $entry->setSource('Nagios');
                     $entry->setIdService($serv->getIdService());
                     $entry->save();
 
@@ -97,13 +109,13 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $pingReports = ReportQuery::create()
-            ->filterByIdSource('2')
+            ->filterBySource('Pingdom')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
             ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
             ->withColumn('ReportStatus.Timestamp', 'Timestamp')
-            ->withColumn('ReportStatus.IdFlag', 'Flag')
+            ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
         //Compare unresolved reports with the checklist received from Pingdom.
@@ -119,28 +131,36 @@ class Aptostat
             }
 
             //If a matching report is not found and the newest status is an error, flag as responding.
-            if ($found == 0 and $query->getFlag() == 2) {
+            if ($found == 0 and $query->getFlag() == "WARNING" || "CRITICAL") {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('5');
+                $update->setFlag('RESPONDING');
                 $update->setTimestamp(time());
                 $update->save();
 
             //If a matching report is found and the newest status is responding, flag as an error.
-            } elseif ($found == 1 and $query->getFlag() == 5) {
+            } elseif ($found == 1 and $query->getFlag() == "RESPONDING") {
+
+                if($report["status"] == "down") {
+                    $pingdomStatus = "CRITICAL";
+                } else {
+                    $pingdomStatus = "WARNING";
+                }
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('2');
+                $update->setFlag($pingdomStatus);
                 $update->setTimestamp(time());
                 $update->save();
 
-            } elseif ($found == 0 and $query->getFlag() == 5 and $query->getTimestamp() < (time()-86400)) {
+            //If a matching report is not found, the newest status is responding, and it has been responding for a day,
+            //flag as resolved.
+            } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and $query->getTimestamp() < (time()-86400)) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('6');
+                $update->setIdFlag('RESOLVED');
                 $update->setTimestamp(time());
                 $update->save();
 
@@ -158,13 +178,13 @@ class Aptostat
 
         //Fetch all relevant information about existing unresolved reports.
         $nagReports = ReportQuery::create()
-            ->filterByIdSource('1')
+            ->filterByIdSource('NAGIOS')
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
             ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
             ->withColumn('ReportStatus.Timestamp', 'Timestamp')
-            ->withColumn('ReportStatus.IdFlag', 'Flag')
+            ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
 
@@ -184,29 +204,36 @@ class Aptostat
             }
 
             //If a matching report is not found and the newest status is not responding, set as responding.
-            if ($found == 0 and $query->getFlag() != 5) {
+            if ($found == 0 and $query->getFlag() == "WARNING" || "CRITICAL") {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('5');
+                $update->setIdFlag('RESPONDING');
                 $update->setTimestamp(time());
                 $update->save();
 
-            //If a matching report is found and the newest status does not match the information from Nagios,
-            //update the status.
-            } elseif ($found == 1 and $query->getFlag() != $service["state"]) {
+            //If a matching report is found and the newest status is responding, flag as an error.
+            } elseif ($found == 1 and $query->getFlag() == "RESPONDING") {
+
+                if ($service["state"] == '2') {
+                    $nagiosStatus = "CRITICAL";
+                } elseif ($service["state"] == '1'){
+                    $nagiosStatus = "WARNING";
+                }
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag($service["state"]);
+                $update->setIdFlag($nagiosStatus);
                 $update->setTimestamp(time());
                 $update->save();
 
-            } elseif ($found = 0 and $query->getFlag() == 5 and $query->getTimestamp() < (time()-86400 )) {
+            //If a matching report is not found, the newest status is responding, and it has been responding for a day,
+            //flag as resolved.
+            } elseif ($found = 0 and $query->getFlag() == "RESPONDING" and $query->getTimestamp() < (time()-86400 )) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
-                $update->setIdFlag('6');
+                $update->setIdFlag('RESOLVED');
                 $update->setTimestamp(time());
                 $update->save();
 
