@@ -17,7 +17,7 @@ class Aptostat
                 ->filterBySource('PINGDOM')
                 ->filterByCheckType($report["type"])
                 ->join('Report.ReportStatus')
-                ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
+                ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
                 ->withColumn('ReportStatus.Flag', 'Flag')
                 ->findOne();
 
@@ -66,7 +66,7 @@ class Aptostat
                     ->filterByCheckType($service["type"])
                     ->filterBySource('NAGIOS')
                     ->join('Report.ReportStatus')
-                    ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
+                    ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
                     ->withColumn('ReportStatus.Flag', 'Flag')
                     ->findOne();
 
@@ -112,7 +112,8 @@ class Aptostat
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
-            ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.Timestamp', 'StatusTime')
             ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
@@ -162,7 +163,7 @@ class Aptostat
 
             //If a matching report is not found, the newest status is responding, and it has been responding for a day,
             //flag as resolved.
-            } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and $query->getTimestamp() < (time()-86400)) {
+            } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and $query->getStatusTime() < (time()-86400)) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
@@ -188,7 +189,8 @@ class Aptostat
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
-            ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
+            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+            ->withColumn('ReportStatus.Timestamp', 'StatusTime')
             ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
@@ -242,7 +244,7 @@ class Aptostat
 
             //If a matching report is not found, the newest status is responding, and it has been responding for a day,
             //flag as resolved.
-            } elseif ($found = 0 and $query->getFlag() == "RESPONDING" and $query->getTimestamp() < (time()-86400 )) {
+            } elseif ($found = 0 and $query->getFlag() == "RESPONDING" and $query->getStatusTime() < (time()-86400 )) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
