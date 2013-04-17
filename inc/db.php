@@ -163,7 +163,7 @@ class Aptostat
 
             //If a matching report is not found, the newest status is responding, and it has been responding for a day,
             //flag as resolved.
-            } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and $query->getStatusTime() < (time()-86400)) {
+            } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and strtotime($query->getStatusTime()) < (time()-86400)) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
@@ -244,7 +244,7 @@ class Aptostat
 
             //If a matching report is not found, the newest status is responding, and it has been responding for a day,
             //flag as resolved.
-            } elseif ($found = 0 and $query->getFlag() == "RESPONDING" and $query->getStatusTime() < (time()-86400 )) {
+            } elseif ($found = 0 and $query->getFlag() == "RESPONDING" and strtotime($query->getStatusTime()) < (time()-86400 )) {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
