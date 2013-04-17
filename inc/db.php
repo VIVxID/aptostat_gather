@@ -129,7 +129,15 @@ class Aptostat
             }
 
             //If a matching report is not found and the newest status is an error, flag as responding.
-            if ($found == 0 and $query->getFlag() == "WARNING" || "CRITICAL") {
+            if ($found == 0 and $query->getFlag() == "WARNING") {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setFlag('RESPONDING');
+                $update->setTimestamp(time());
+                $update->save();
+
+            } elseif ($found == 0 and $query->getFlag() == "CRITICAL") {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
@@ -201,7 +209,15 @@ class Aptostat
             }
 
             //If a matching report is not found and the newest status is not responding, set as responding.
-            if ($found == 0 and $query->getFlag() == "WARNING" || "CRITICAL") {
+            if ($found == 0 and $query->getFlag() == "WARNING") {
+
+                $update = new ReportStatus();
+                $update->setIdReport($query->getIdReport());
+                $update->setFlag('RESPONDING');
+                $update->setTimestamp(time());
+                $update->save();
+
+            } elseif ($found == 0 and $query->getFlag() == "CRITICAL") {
 
                 $update = new ReportStatus();
                 $update->setIdReport($query->getIdReport());
