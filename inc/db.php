@@ -66,7 +66,7 @@ class Aptostat
                     ->filterByCheckType($service["type"])
                     ->filterBySource('NAGIOS')
                     ->join('Report.ReportStatus')
-                    ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
+                    ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
                     ->withColumn('ReportStatus.Flag', 'Flag')
                     ->findOne();
 
@@ -112,8 +112,7 @@ class Aptostat
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
-            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
-            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
+            ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
             ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
@@ -181,8 +180,7 @@ class Aptostat
             ->join('Report.Service')
             ->withColumn('Service.Name', 'ServiceName')
             ->join('Report.ReportStatus')
-            ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus)')
-            ->withColumn('ReportStatus.Timestamp', 'Timestamp')
+            ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
             ->withColumn('ReportStatus.Flag', 'Flag')
             ->find();
 
