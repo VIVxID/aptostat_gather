@@ -22,7 +22,7 @@ class Aptostat
                 ->findOne();
 
             //If no matching report was found, create it.
-            if (is_null($match)) {
+            if ($match->getIdReport() == null || $match->getFlag == "RESOLVED") {
 
                 if($report["status"] == "down") {
                     $pingdomStatus = "CRITICAL";
@@ -71,7 +71,7 @@ class Aptostat
                     ->findOne();
 
                 //If no matching report was found, create it.
-                if (is_null($match) or $match->getFlag() == 6) {
+                if ($match->getIdReport == null || $match->getFlag() == "RESOLVED") {
 
                     if ($service["state"] == '2') {
                         $nagiosStatus = "CRITICAL";
