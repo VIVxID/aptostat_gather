@@ -17,8 +17,7 @@ class Aptostat
                 ->filterBySource('PINGDOM')
                 ->filterByCheckType($report["type"])
                 ->join('Report.ReportStatus')
-		        ->where('ReportStatus.Timestamp IN (SELECT MAX(ReportStatus.Timestamp) FROM ReportStatus)')
-                ->withColumn('ReportStatus.Timestamp', 'StatusTime')
+                ->withColumn('MAX(ReportStatus.Timestamp)', 'StatusTime')
                 ->withColumn('ReportStatus.Flag', 'Flag')
                 ->findOne();
 
