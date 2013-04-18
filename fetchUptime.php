@@ -8,7 +8,7 @@ $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);
 $out = array();
-$from = time()-31536000;
+$from = time()-518400;
 $to = time();
 
 $hosts = array(
