@@ -8,6 +8,8 @@ $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);
 $out = array();
+$to = time();
+$from = time()-518400;
 
 $hosts = array(
     "Atika Backoffice" => 615766,
@@ -23,7 +25,7 @@ $hosts = array(
 foreach ($hosts as $hostName => $hostID) {
 
     $options = array(
-        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID",
+        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID?from=$from&to=$to",
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_USERPWD => $login[0].":".$login[1],
         CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
@@ -37,11 +39,13 @@ foreach ($hosts as $hostName => $hostID) {
     foreach ($checkList as $check) {
 
         //To ensure the returned array is populated with hostnames and dates despite there being no downtime to report.
-        $out[$hostName][date("d/m/Y",$check["timefrom"])] = 0;
+        if (!isset($out[$hostName][date("d/m/Y",$check["timefrom"])])) {
+            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])] = 0;
+        }
 
         if ($check["status"] != "up") {
 
-            $out[$hostName][date("d/m/Y",$check["timefrom"])][] = $check["timeto"] - $check["timefrom"];
+            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])][] = $check["timeto"] - $check["timefrom"];
 
         }
     }
