@@ -40,7 +40,7 @@ foreach ($hosts as $hostName => $hostID) {
 
         //To ensure the returned array is populated with hostnames and dates despite there being no downtime to report.
         if (!isset($out[$hostName][date("d/m/Y",$check["timefrom"])])) {
-            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])] = 0;
+            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])] = array();
         }
 
         if ($check["status"] != "up") {
