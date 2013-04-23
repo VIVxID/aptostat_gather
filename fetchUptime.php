@@ -8,8 +8,6 @@ $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);
 $out = array();
-$from = time()-518400;
-$to = time();
 
 $hosts = array(
     "Atika Backoffice" => 615766,
@@ -24,10 +22,8 @@ $hosts = array(
 //Gets uptime history for the last week for every service.
 foreach ($hosts as $hostName => $hostID) {
 
-    $out[$hostName] = array();
-
     $options = array(
-        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID?to=$to&from=$from",
+        CURLOPT_URL => "https://api.pingdom.com/api/2.0/summary.outage/$hostID",
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_USERPWD => $login[0].":".$login[1],
         CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
@@ -39,6 +35,9 @@ foreach ($hosts as $hostName => $hostID) {
     $checkList = $response["summary"]["states"];
 
     foreach ($checkList as $check) {
+
+        //To ensure the returned array is populated with hostnames and dates despite there being no downtime to report.
+        $out[$hostName][date("d/m/Y",$check["timefrom"])] = 0;
 
         if ($check["status"] != "up") {
 
