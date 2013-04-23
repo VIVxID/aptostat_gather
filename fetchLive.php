@@ -51,4 +51,4 @@ foreach ($checkList as $check) {
     }
 }
 
-$m->set("live", $out, 180);
+$m->set("live", $out, 600);
