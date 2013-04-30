@@ -24,7 +24,7 @@ class DatabaseService
                     ->findOne();
 
                 //If no matching report was found, create it.
-                if ($match->getIdReport() == null || $match->getFlag() == "RESOLVED") {
+                if (count($match) == 0 || $match->getFlag() == "RESOLVED") {
 
                     if($report["status"] == "down") {
                         $pingdomStatus = "CRITICAL";
@@ -76,7 +76,7 @@ class DatabaseService
                         ->findOne();
 
                     //If no matching report was found, create it.
-                    if ($match->getIdReport() == null || $match->getFlag() == "RESOLVED") {
+                    if (count($match) == 0 || $match->getFlag() == "RESOLVED") {
 
                         if ($service["state"] == '2') {
                             $nagiosStatus = "CRITICAL";
