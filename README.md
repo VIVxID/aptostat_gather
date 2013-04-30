@@ -5,7 +5,13 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 - PHP
 - MySQL
 - Memcached
+- PHP-Memcached
 - Propel
 
-Aptostat_gather relies on the database schema which is used in Aptostat_api
-Follow the instructions in Apostat_api
+Aptostat_gather relies on the database schema which is used in Aptostat_api, and uses the same Propel object models.
+Follow the instructions in Apostat_api for setting up propel.
+
+Install memcached and set it up as a service.
+
+Run collectReports.php, fetchLive.php and fetchUptime.php as crontabs. We recommend 1-minute intervals for
+collectReports and fetchLive, and an hour for fetchUptime.
