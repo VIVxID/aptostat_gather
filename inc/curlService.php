@@ -1,7 +1,7 @@
 <?php
 //Connection to Pingdom&Nagios
 
-class Connect
+class CurlService
 {
 
     public function collectPingdom($user,$pass,$key)
@@ -68,7 +68,6 @@ class Connect
                                             "lastcheck" => $service["last_check"],
                                             "state" => $service["current_state"],
                                             "statechange" => $service["last_state_change"]);
-
                 }
             }
 
@@ -84,6 +83,5 @@ class Connect
         }
 
         return $errors;
-
     }
 }

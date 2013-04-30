@@ -1,7 +1,7 @@
 <?php
 //Database management via Propel
 
-class Aptostat
+class DatabaseService
 {
 
     function savePingdom($pingResult)
