@@ -9,7 +9,7 @@ $m = new \Memcached();
 $m->addServer("localhost",11211);
 $out = array();
 $to = time();
-$from = time()-518400;
+$from = strtotime("-30 days");
 
 $hosts = array(
     "Atika Backoffice" => 615766,
@@ -40,12 +40,12 @@ foreach ($hosts as $hostName => $hostID) {
 
         //To ensure the returned array is populated with hostnames and dates despite there being no downtime to report.
         if (!isset($out[$hostName][date("d/m/Y",$check["timefrom"])])) {
-            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])] = array();
+            $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])." - ".date("d/m/Y H:i:s",$check["timeto"])] = array();
         }
 
         if ($check["status"] != "up") {
 
-            $out[$hostName][date("d/m/Y",$check["timefrom"])." - ".date("d/m/Y",$check["timeto"])][] = $check["timeto"] - $check["timefrom"];
+            $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])." - ".date("d/m/Y H:i:s",$check["timeto"])][] = $check["timeto"] - $check["timefrom"];
 
         }
     }
