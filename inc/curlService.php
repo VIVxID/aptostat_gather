@@ -24,7 +24,6 @@ class CurlService
 
         $response = json_decode(curl_exec($curl),true);
 
-        //Filter out all checks where status == "up".
         $checkList = $response["checks"];
 
         foreach ($checkList as $check) {

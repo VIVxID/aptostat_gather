@@ -16,12 +16,10 @@ $options = array(
     CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
     CURLOPT_RETURNTRANSFER => true);
 
-// Execute
 curl_setopt_array($curl,$options);
 $response = json_decode(curl_exec($curl),true);
 $checkList = $response["checks"];
 
-// Format the information
 foreach ($checkList as $check) {
     switch ($check["name"]) {
         case "DrVideo Encoding":

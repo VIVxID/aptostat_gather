@@ -21,7 +21,6 @@ $hosts = array(
     "DrPublish Backoffice" => 615767,
     "DrPublish API" => 615771);
 
-//Gets uptime history for the last week for every service.
 foreach ($hosts as $hostName => $hostID) {
 
     $options = array(
@@ -31,14 +30,12 @@ foreach ($hosts as $hostName => $hostID) {
         CURLOPT_HTTPHEADER => array("App-Key: ".$login[2]),
         CURLOPT_RETURNTRANSFER => true);
 
-    // Execute
     curl_setopt_array($curl,$options);
     $response = json_decode(curl_exec($curl),true);
     $checkList = $response["summary"]["states"];
 
     foreach ($checkList as $check) {
 
-        //To ensure the returned array is populated with hostnames and dates despite there being no downtime to report.
         if (!isset($out[$hostName][date("d/m/Y",$check["timefrom"])])) {
             $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])." - ".date("d/m/Y H:i:s",$check["timeto"])] = array();
         }
