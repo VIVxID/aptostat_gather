@@ -7,64 +7,17 @@ class DatabaseService
     function savePingdom($pingResult)
     {
 
-        foreach ($pingResult as $report) {
+        if (!is_null($pingResult)) {
 
-            //Checks the database for matching reports.
-            $match = ReportQuery::create()
-                ->useServiceQuery()
-                    ->filterByName($report["hostname"])
-                ->endUse()
-                ->filterBySource('PINGDOM')
-                ->filterByCheckType($report["type"])
-                ->join('Report.ReportStatus')
-                ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
-                ->withColumn('ReportStatus.Flag', 'Flag')
-                ->findOne();
-
-            //If no matching report was found, create it.
-            if ($match->getIdReport() == null || $match->getFlag() == "RESOLVED") {
-
-                if($report["status"] == "down") {
-                    $pingdomStatus = "CRITICAL";
-                } else {
-                    $pingdomStatus = "WARNING";
-                }
-
-                $flag = new ReportStatus();
-                $flag->setFlag($pingdomStatus);
-                $flag->setTimestamp(time());
-
-                $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
-
-                $entry = new Report();
-                $entry->setErrorMessage($report["status"]);
-                $entry->setTimestamp($report["lasterrortime"]);
-                $entry->setCheckType($report["type"]);
-                $entry->setSource('PINGDOM');
-                $entry->setIdService($serv->getIdService());
-                $entry->save();
-
-                $flag->setIdReport($entry->getIdReport());
-                $flag->save();
-
-            }
-        }
-    }
-
-    function saveNagios($nagResult)
-    {
-
-        foreach ($nagResult as $name => $report) {
-
-            foreach ($report as $service) {
+            foreach ($pingResult as $report) {
 
                 //Checks the database for matching reports.
                 $match = ReportQuery::create()
                     ->useServiceQuery()
-                        ->filterByName($name)
+                    ->filterByName($report["hostname"])
                     ->endUse()
-                    ->filterByCheckType($service["type"])
-                    ->filterBySource('NAGIOS')
+                    ->filterBySource('PINGDOM')
+                    ->filterByCheckType($report["type"])
                     ->join('Report.ReportStatus')
                     ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
                     ->withColumn('ReportStatus.Flag', 'Flag')
@@ -73,29 +26,82 @@ class DatabaseService
                 //If no matching report was found, create it.
                 if ($match->getIdReport() == null || $match->getFlag() == "RESOLVED") {
 
-                    if ($service["state"] == '2') {
-                        $nagiosStatus = "CRITICAL";
-                    } elseif ($service["state"] == '1'){
-                        $nagiosStatus = "WARNING";
+                    if($report["status"] == "down") {
+                        $pingdomStatus = "CRITICAL";
+                    } else {
+                        $pingdomStatus = "WARNING";
                     }
 
                     $flag = new ReportStatus();
-                    $flag->setFlag($nagiosStatus);
+                    $flag->setFlag($pingdomStatus);
                     $flag->setTimestamp(time());
 
-                    $serv = ServiceQuery::create()->findOneByName($name);
+                    $serv = ServiceQuery::create()->findOneByName($report["hostname"]);
 
                     $entry = new Report();
-                    $entry->setErrorMessage($service["output"]);
-                    $entry->setTimestamp($service["statechange"]);
-                    $entry->setCheckType($service["type"]);
-                    $entry->setSource('NAGIOS');
+                    $entry->setErrorMessage($report["status"]);
+                    $entry->setTimestamp($report["lasterrortime"]);
+                    $entry->setCheckType($report["type"]);
+                    $entry->setSource('PINGDOM');
                     $entry->setIdService($serv->getIdService());
                     $entry->save();
 
                     $flag->setIdReport($entry->getIdReport());
                     $flag->save();
 
+                }
+            }
+        }
+    }
+
+    function saveNagios($nagResult)
+    {
+
+        if (!is_null($nagResult)) {
+
+            foreach ($nagResult as $name => $report) {
+
+                foreach ($report as $service) {
+
+                    //Checks the database for matching reports.
+                    $match = ReportQuery::create()
+                        ->useServiceQuery()
+                        ->filterByName($name)
+                        ->endUse()
+                        ->filterByCheckType($service["type"])
+                        ->filterBySource('NAGIOS')
+                        ->join('Report.ReportStatus')
+                        ->where('ReportStatus.Timestamp IN (SELECT MAX(Timestamp) FROM ReportStatus WHERE Report.IdReport = ReportStatus.IdReport)')
+                        ->withColumn('ReportStatus.Flag', 'Flag')
+                        ->findOne();
+
+                    //If no matching report was found, create it.
+                    if ($match->getIdReport() == null || $match->getFlag() == "RESOLVED") {
+
+                        if ($service["state"] == '2') {
+                            $nagiosStatus = "CRITICAL";
+                        } elseif ($service["state"] == '1'){
+                            $nagiosStatus = "WARNING";
+                        }
+
+                        $flag = new ReportStatus();
+                        $flag->setFlag($nagiosStatus);
+                        $flag->setTimestamp(time());
+
+                        $serv = ServiceQuery::create()->findOneByName($name);
+
+                        $entry = new Report();
+                        $entry->setErrorMessage($service["output"]);
+                        $entry->setTimestamp($service["statechange"]);
+                        $entry->setCheckType($service["type"]);
+                        $entry->setSource('NAGIOS');
+                        $entry->setIdService($serv->getIdService());
+                        $entry->save();
+
+                        $flag->setIdReport($entry->getIdReport());
+                        $flag->save();
+
+                    }
                 }
             }
         }
@@ -146,7 +152,7 @@ class DatabaseService
                 $update->setTimestamp(time());
                 $update->save();
 
-            //If a matching report is found and the newest status is responding, flag as an error.
+                //If a matching report is found and the newest status is responding, flag as an error.
             } elseif ($found == 1 and $query->getFlag() == "RESPONDING") {
 
                 if($report["status"] == "down") {
@@ -161,8 +167,8 @@ class DatabaseService
                 $update->setTimestamp(time());
                 $update->save();
 
-            //If a matching report is not found, the newest status is responding, and it has been responding for a day,
-            //flag as resolved.
+                //If a matching report is not found, the newest status is responding, and it has been responding for a day,
+                //flag as resolved.
             } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and strtotime($query->getStatusTime()) < (time()-86400)) {
 
                 $update = new ReportStatus();
@@ -227,7 +233,7 @@ class DatabaseService
                 $update->setTimestamp(time());
                 $update->save();
 
-            //If a matching report is found and the newest status is responding, flag as an error.
+                //If a matching report is found and the newest status is responding, flag as an error.
             } elseif ($found == 1 and $query->getFlag() == "RESPONDING") {
 
                 if ($service["state"] == '2') {
@@ -242,8 +248,8 @@ class DatabaseService
                 $update->setTimestamp(time());
                 $update->save();
 
-            //If a matching report is not found, the newest status is responding, and it has been responding for a day,
-            //flag as resolved.
+                //If a matching report is not found, the newest status is responding, and it has been responding for a day,
+                //flag as resolved.
             } elseif ($found == 0 and $query->getFlag() == "RESPONDING" and strtotime($query->getStatusTime()) < (time()-86400 )) {
 
                 $update = new ReportStatus();
