@@ -6,12 +6,15 @@
  *  run it at the database to update the service list. The generated SQL will
  *  not remove hosts that no longer exist.
  */
+
+// FILE WITH PINGOM LOGIN INFO HERE
 $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
+
+unlink("populate.sql");
 $fil = fopen("populate.sql","a+");
 
 $curl = curl_init();
 
-//OBS: Bytt ut loginvariablene med user, password og app key.
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
     CURLOPT_CUSTOMREQUEST => "GET",
