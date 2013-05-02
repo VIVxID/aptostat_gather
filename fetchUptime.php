@@ -33,12 +33,12 @@ foreach ($hosts as $hostName => $hostID) {
     foreach ($checkList as $check) {
 
         if (!isset($out[$hostName][date("d/m/Y",$check["timefrom"])])) {
-            $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])." - ".date("d/m/Y H:i:s",$check["timeto"])] = array();
+            $out[$hostName][date("d/m/Y",$check["timefrom"])]["Downtime"] = 0;
         }
 
         if ($check["status"] != "up") {
 
-            $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])." - ".date("d/m/Y H:i:s",$check["timeto"])][] = $check["timeto"] - $check["timefrom"];
+            $out[$hostName][date("d/m/Y H:i:s",$check["timefrom"])]["Downtime"] += $check["timeto"] - $check["timefrom"];
 
         }
     }
