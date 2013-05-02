@@ -6,6 +6,7 @@ set_include_path(APIPATH . "build/classes" . PATH_SEPARATOR . get_include_path()
 
 require "inc/curlService.php";
 require "inc/databaseService.php";
+require "inc/mutexService.php";
 
 $dbService = new DatabaseService();
 $curlService = new CurlService();
