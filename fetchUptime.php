@@ -1,8 +1,4 @@
 <?php
-require_once '/var/wwwApi/vendor/propel/propel1/runtime/lib/Propel.php';
-Propel::init("/var/wwwApi/build/conf/aptostat-conf.php");
-set_include_path("/var/wwwApi/build/classes" . PATH_SEPARATOR . get_include_path());
-
 $login = file('/var/apto/ping', FILE_IGNORE_NEW_LINES);
 $curl = curl_init();
 $m = new \Memcached();
