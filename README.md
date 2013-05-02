@@ -11,7 +11,7 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 Aptostat_gather relies on the database schema which is used in Aptostat_api, and uses the same Propel object models.
 Follow the instructions in Apostat_api for setting up propel. Then update collectReports with the proper path.
 
-Install memcached and its php-extension and set it up as a local service on port 11211 (default).
+Install memcached and its php-extension. Gather is set to use memcached's default config - localhost on port 11211.
 
 Run collectReports.php, fetchLive.php, fetchUptime.php and builder.php->populate.sql as crontabs. We recommend 1-minute intervals for
 collectReports and fetchLive, five minutes for builder&&populate and 30-60 minutes for fetchUptime.
