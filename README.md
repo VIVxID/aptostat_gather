@@ -184,6 +184,5 @@ function in the Pingdom API to collect information. The function returns a JSON-
 fetchUptime.php subtracts timefrom from timeto where the status is not up to find downtime in seconds for each host, 
 and stores it in Memcached with a cache duration of half a day.
 
-The cached information can be retrieved with the /uptime function in the API, and returns a JSON-body with a to-from 
-timestamp and the downtime in seconds.
+The cached information can be retrieved with the /uptime function in the API.
 
