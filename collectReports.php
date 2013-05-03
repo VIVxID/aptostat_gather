@@ -16,7 +16,7 @@ if ($mutexService->checkKillswitch()) {
     if ($mutexService->lockCollection()) {
 
         //Setup authentication and collect from Pingdom.
-        $login = file("CREDENTIALS_FILE", FILE_IGNORE_NEW_LINES);
+        $login = file(CREDENTIALS_FILE, FILE_IGNORE_NEW_LINES);
         $pingResult = $curlService->collectPingdom($login[0],$login[1],$login[2]);
 
         //Collect from Nagios in London and Amsterdam. Intersect and save identical reports.

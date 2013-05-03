@@ -12,7 +12,7 @@ require_once 'config.php';
 require_once API_PATH . 'vendor/propel/propel1/runtime/lib/Propel.php';
 Propel::init(API_PATH . "build/conf/aptostat-conf.php");
 set_include_path(API_PATH . "build/classes" . PATH_SEPARATOR . get_include_path());
-$login = file("CREDENTIALS_FILE", FILE_IGNORE_NEW_LINES);
+$login = file(CREDENTIALS_FILE, FILE_IGNORE_NEW_LINES);
 
 // Pingdom
 $curl = curl_init();
