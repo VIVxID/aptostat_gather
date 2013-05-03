@@ -5,7 +5,9 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 - PHP
 - MySQL
 - Memcached
+- Curl
 - PHP-Memcached
+- PHP-Curl
 - Propel
 
 Aptostat_gather relies on the database schema which is used in Aptostat_api, and uses the same Propel object models.
