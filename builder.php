@@ -7,7 +7,7 @@
  *  not remove hosts that no longer exist.
  */
 
-echo "Initiating...\n";
+echo "\tInitiating...\n";
 require_once 'config.php';
 require_once API_PATH . 'vendor/propel/propel1/runtime/lib/Propel.php';
 Propel::init(API_PATH . "build/conf/aptostat-conf.php");
@@ -17,7 +17,7 @@ $login = file(CREDENTIALS_FILE, FILE_IGNORE_NEW_LINES);
 // Pingdom
 $curl = curl_init();
 
-echo "Setting up connection to Pingdom\n";
+echo "\tSetting up connection to Pingdom\n";
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
     CURLOPT_CUSTOMREQUEST => "GET",
@@ -28,34 +28,34 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
-echo "Connecting to Pingdom...\n";
+echo "\tConnecting to Pingdom...\n";
 $response = json_decode(curl_exec($curl),true);
 
 if (isset($response['error'])) {
-    echo "Problems with connecting to Pingdom\n";
-    echo "Error: " . $response['error']['errormessage'] . "\n";
+    echo "\t" .chr(27). "[0;31m Problems with connecting to Pingdom\n";
+    echo "\tError: " . $response['error']['errormessage'] . chr(27) . "[0m\n";
     exit;
 }
 $checkList = $response["checks"];
-echo "Connection success\n";
+echo "\tConnection success\n";
 
+echo "\tPreparing to insert hostnames (Ignore if they exist)\n";
 foreach ($checkList as $check) {
 
-    echo "Preparing to insert (If it does not exist): " . $check["hostname"] . "\n";
     $con = Propel::getConnection(ServicePeer::DATABASE_NAME);
     $sql = "INSERT IGNORE INTO Service (Name) VALUES(:hostname)";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(':hostname' => $check["hostname"]));
-    echo "Insertions successful\n";
+    echo chr(27). "[1;32m." .chr(27). "[0m";
 
 }
 
-echo "All Pingdom hostnames successfully inserted\n";
+echo "\n\tAll Pingdom hostnames successfully inserted\n";
 
 // Nagios
 $curl2 = curl_init();
 
-echo "Setting up connection to Nagios\n";
+echo "\tSetting up connection to Nagios\n";
 $options = array(
     CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
     CURLOPT_CUSTOMREQUEST => "GET",
@@ -64,23 +64,23 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
-echo "Connecting to Nagios...\n";
+echo "\tConnecting to Nagios...\n";
 $response = json_decode(curl_exec($curl),true);
 
 $checkList = $response["content"];
-echo "Connection success\n";
+echo "\tConnection success\n";
 
+echo "\tPreparing to insert hostnames (Ignore if they exist)\n";
 foreach ($checkList as $checkName => $check) {
 
-    echo "Preparing to insert (If it does not exist): " . $checkName . "\n";
     $con = Propel::getConnection(ServicePeer::DATABASE_NAME);
     $sql = "INSERT IGNORE INTO Service (Name) VALUES(:hostname)";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(':hostname' => $checkName));
-    echo "Insertions successful\n";
+    echo chr(27). "[1;32m." .chr(27). "[0m";
 
 }
-echo "All Nagios hostnames successfully inserted\n";
+echo "\tAll Nagios hostnames successfully inserted\n";
 
-echo "Script finished\n";
+echo "\n\t" .chr(27). "[1;32m ------------ Script finished ------------" .char(27). "[0m\n";
 exit;
