@@ -31,7 +31,7 @@ Create the file `ping` in the path `/var/apto/ping`:
     $ sudo mkdir -p /var/apto
     $ sudo touch /var/apto/ping
 
-Use any editor and enter you Pingdom credentials in the following format:
+Use any editor and enter your Pingdom credentials in the following format:
 
 ```
 username
@@ -54,7 +54,7 @@ Enter the editor with
 
     $ crontab -e
 
-Add the following:
+Add the following: (Replace `/path/to` with an actual path)
 
 ```
     * * * * * cd /path/to/aptostat_gather && php collectReports.php
@@ -64,8 +64,8 @@ Add the following:
 
 Running `builder.php` as a crontab is optional. It all depends on how often you plan to add new hosts.
 
-Run collectReports.php, fetchLive.php and fetchUptime.php as crontabs. We recommend 1-minute intervals for
-collectReports and fetchLive and 30-60 minutes for fetchUptime.
+Run `collectReports.php`, `fetchLive.php` and `fetchUptime.php` as crontabs. We recommend 1-minute intervals for
+`collectReports.php` and `fetchLive.php` and 30-60 minutes for `fetchUptime.php`.
 
 ## Function
 
