@@ -82,5 +82,5 @@ foreach ($checkList as $checkName => $check) {
 }
 echo "\tAll Nagios hostnames successfully inserted\n";
 
-echo "\n\t" .chr(27). "[1;32m ------------ Script finished ------------" .char(27). "[0m\n";
+echo "\n\t" .chr(27). "[1;32m ------------ Script finished ------------" .chr(27). "[0m\n";
 exit;
