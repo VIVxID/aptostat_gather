@@ -44,34 +44,28 @@ Note: Ensure that the server where gather is deployed has permission to access y
 #### Change config.php
 Update `config.php` with the right path to API root-folder and the Pingdom credentials.
 
+#### Populate Service table
+Run `builder.php` with the command:
 
-    Kjør builder.php én gang. Kan ta litt tid.
-    Dette lager en fil: populate.sql
+    php builder.php
 
-    Legg inn tjenestene inn i databasen med følgende kommando:
-
-    mysql -h localhost -u aptostat -p aptostat < populate.sql
-
-    Sett opp crontab som kjører filene: Eks:
+#### Set up crontabs
+Enter the editor with
 
     $ crontab -e
 
-    * * * * * cd /home/group1/git/aptostat_gather/ && php collectReports.php
-    * * * * * cd /home/group1/git/aptostat_gather/ && php fetchLive.php
-    0 * * * * cd /home/group1/git/aptostat_gather/ && php fetchUptime.php
+Add the following:
 
+```
+    * * * * * cd /path/to/aptostat_gather && php collectReports.php
+    * * * * * cd /path/to/aptostat_gather && php fetchLive.php
+    0 * * * * cd /path/to/aptostat_gather && php fetchUptime.php
+```
 
-    Om ting fungerer så skal rapporter som dukker opp begynne å legges inn i databasen.
-
-Collection from Pingdom requires username, password and app-key. Save them line by line in a file and put it somewhere remote.
-Update builder.php, fetchLive.php, fetchUptime and collectReports.php with the path.
-
-Run builder.php to generate populate.sql. Run populate at the database to insert hostnames.
+Running `builder.php` as a crontab is optional. It all depends on how often you plan to add new hosts.
 
 Run collectReports.php, fetchLive.php and fetchUptime.php as crontabs. We recommend 1-minute intervals for
-collectReports and fetchLive, five minutes for builder&&populate and 30-60 minutes for fetchUptime.
-
-Running builder as a crontab is optional. It all depends on how often you plan to add new hosts.
+collectReports and fetchLive and 30-60 minutes for fetchUptime.
 
 ## Function
 
