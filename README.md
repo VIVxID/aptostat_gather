@@ -15,9 +15,12 @@ Follow the instructions in Apostat_api for setting up propel. Then update collec
 
 Install memcached and its php-extension. Gather is set to use memcached's default config - localhost on port 11211.
 
-Collection from Pingdom requires username, password and app-key.
+Collection from Pingdom requires username, password and app-key. Save them line by line in a file and put it somewhere remote.
+Update builder.php, fetchLive.php, fetchUptime and collectReports.php with the path.
 
-Run collectReports.php, fetchLive.php, fetchUptime.php and builder.php->populate.sql as crontabs. We recommend 1-minute intervals for
+Run builder.php to generate populate.sql. Run populate at the database to insert hostnames.
+
+Run collectReports.php, fetchLive.php and fetchUptime.php as crontabs. We recommend 1-minute intervals for
 collectReports and fetchLive, five minutes for builder&&populate and 30-60 minutes for fetchUptime.
 
 Running builder as a crontab is optional. It all depends on how often you plan to add new hosts.
