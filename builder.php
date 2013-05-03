@@ -10,7 +10,10 @@
 // FILE WITH PINGOM LOGIN INFO HERE
 $login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
 
-unlink("populate.sql");
+if (file_exists("populate.sql")) {
+    unlink("populate.sql");
+}
+
 $fil = fopen("populate.sql","a+");
 
 $curl = curl_init();
