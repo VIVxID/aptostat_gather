@@ -8,7 +8,7 @@ class MutexService
 
     public function __construct()
     {
-        $this->killswitchPath = APIPATH . "app/lock/gatherKill.lock";
+        $this->killswitchPath = API_PATH . "app/lock/gatherKill.lock";
         $this->lockPath = "lock/lockCollection.lock";
     }
 

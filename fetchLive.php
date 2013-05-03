@@ -1,5 +1,6 @@
 <?php
-$login = file('/var/apto/ping', FILE_IGNORE_NEW_LINES);
+require_once 'config.php';
+$login = file('CREDENTIALS_FILE', FILE_IGNORE_NEW_LINES);
 $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);

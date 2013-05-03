@@ -7,17 +7,17 @@
  *  not remove hosts that no longer exist.
  */
 
-// FILE WITH PINGOM LOGIN INFO HERE
-$login = file("/var/apto/ping", FILE_IGNORE_NEW_LINES);
+echo "Initiating...\n";
+require_once 'config.php';
+require_once API_PATH . 'vendor/propel/propel1/runtime/lib/Propel.php';
+Propel::init(API_PATH . "build/conf/aptostat-conf.php");
+set_include_path(API_PATH . "build/classes" . PATH_SEPARATOR . get_include_path());
+$login = file("CREDENTIALS_FILE", FILE_IGNORE_NEW_LINES);
 
-if (file_exists("populate.sql")) {
-    unlink("populate.sql");
-}
-
-$fil = fopen("populate.sql","a+");
-
+// Pingdom
 $curl = curl_init();
 
+echo "Setting up connection to Pingdom\n";
 $options = array(
     CURLOPT_URL => "https://api.pingdom.com/api/2.0/checks",
     CURLOPT_CUSTOMREQUEST => "GET",
@@ -28,18 +28,34 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
+echo "Connecting to Pingdom...\n";
 $response = json_decode(curl_exec($curl),true);
+
+if (isset($response['error'])) {
+    echo "Problems with connecting to Pingdom\n";
+    echo "Error: " . $response['error']['errormessage'] . "\n";
+    exit;
+}
 $checkList = $response["checks"];
+echo "Connection success\n";
 
 foreach ($checkList as $check) {
 
-    // Hostnames are set to be unique, to ensure hosts only get saved once.
-    fwrite($fil,"INSERT IGNORE INTO Service (Name) VALUES ('".$check["hostname"]."');\n");
+    echo "Preparing to insert (If it does not exist): " . $check["hostname"] . "\n";
+    $con = Propel::getConnection(ServicePeer::DATABASE_NAME);
+    $sql = "INSERT IGNORE INTO Service (Name) VALUES(:hostname)";
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array(':hostname' => $check["hostname"]));
+    echo "Insertions successful\n";
 
 }
 
+echo "All Pingdom hostnames successfully inserted\n";
+
+// Nagios
 $curl2 = curl_init();
 
+echo "Setting up connection to Nagios\n";
 $options = array(
     CURLOPT_URL => "http://nagios.lon.aptoma.no:8080/state",
     CURLOPT_CUSTOMREQUEST => "GET",
@@ -48,11 +64,23 @@ $options = array(
 
 curl_setopt_array($curl,$options);
 
+echo "Connecting to Nagios...\n";
 $response = json_decode(curl_exec($curl),true);
+
 $checkList = $response["content"];
+echo "Connection success\n";
 
 foreach ($checkList as $checkName => $check) {
 
-     fwrite($fil,"INSERT IGNORE INTO Service (Name) VALUES ('".$checkName."');\n");
+    echo "Preparing to insert (If it does not exist): " . $checkName . "\n";
+    $con = Propel::getConnection(ServicePeer::DATABASE_NAME);
+    $sql = "INSERT IGNORE INTO Service (Name) VALUES(:hostname)";
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array(':hostname' => $checkName));
+    echo "Insertions successful\n";
 
 }
+echo "All Nagios hostnames successfully inserted\n";
+
+echo "Script finished\n";
+exit;

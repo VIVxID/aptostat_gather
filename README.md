@@ -8,12 +8,60 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 - Curl
 - PHP-Memcached
 - PHP-Curl
-- Propel
 
 Aptostat_gather relies on the database schema which is used in Aptostat_api, and uses the same Propel object models.
-Follow the instructions in Apostat_api for setting up propel. Then update collectReports with the proper path.
+Follow the instructions in Apostat_api for setting up propel.
+Then update `collectReports.php` with the proper path.
 
+Aptostat_gather relies on memcached to store information that is not real time critical.
+
+If you haven't installed memcached yet, please do so.
 Install memcached and its php-extension. Gather is set to use memcached's default config - localhost on port 11211.
+
+### Setting up gather
+
+#### Clone the files
+
+    $ git clone https://github.com/nox27/aptostat_gui.git
+    $ sudo mv aptostat_gui/* /var/www/
+
+#### Make the credentials file
+Create the file `ping` in the path `/var/apto/ping`:
+
+    $ sudo mkdir -p /var/apto
+    $ sudo touch /var/apto/ping
+
+Use any editor and enter you Pingdom credentials in the following format:
+
+```
+username
+password
+app-key
+```
+
+Note: Ensure that the server where gather is deployed has permission to access your Nagios data
+
+#### Change config.php
+Update `config.php` with the right path to API root-folder and the Pingdom credentials.
+
+
+    Kjør builder.php én gang. Kan ta litt tid.
+    Dette lager en fil: populate.sql
+
+    Legg inn tjenestene inn i databasen med følgende kommando:
+
+    mysql -h localhost -u aptostat -p aptostat < populate.sql
+
+    Sett opp crontab som kjører filene: Eks:
+
+    $ crontab -e
+
+    * * * * * cd /home/group1/git/aptostat_gather/ && php collectReports.php
+    * * * * * cd /home/group1/git/aptostat_gather/ && php fetchLive.php
+    0 * * * * cd /home/group1/git/aptostat_gather/ && php fetchUptime.php
+
+
+    Om ting fungerer så skal rapporter som dukker opp begynne å legges inn i databasen.
 
 Collection from Pingdom requires username, password and app-key. Save them line by line in a file and put it somewhere remote.
 Update builder.php, fetchLive.php, fetchUptime and collectReports.php with the path.
