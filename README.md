@@ -22,8 +22,7 @@ Install memcached and its php-extension. Gather is set to use memcached's defaul
 
 #### Clone the files
 
-    $ git clone https://github.com/nox27/aptostat_gui.git
-    $ sudo mv aptostat_gui/* /var/www/
+    $ git clone https://github.com/nox27/aptostat_gather.git
 
 #### Make the credentials file
 Create the file `ping` in the path `/var/apto/ping`:
