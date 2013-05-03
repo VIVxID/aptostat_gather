@@ -5,13 +5,17 @@ This is the back-end part which will fetch status messages from Aptoma's Pingdom
 - PHP
 - MySQL
 - Memcached
+- Curl
 - PHP-Memcached
+- PHP-Curl
 - Propel
 
 Aptostat_gather relies on the database schema which is used in Aptostat_api, and uses the same Propel object models.
 Follow the instructions in Apostat_api for setting up propel. Then update collectReports with the proper path.
 
-Install memcached and its php-extension and set it up as a local service on port 11211 (default).
+Install memcached and its php-extension. Gather is set to use memcached's default config - localhost on port 11211.
+
+Collection from Pingdom requires username, password and app-key.
 
 Run collectReports.php, fetchLive.php, fetchUptime.php and builder.php->populate.sql as crontabs. We recommend 1-minute intervals for
 collectReports and fetchLive, five minutes for builder&&populate and 30-60 minutes for fetchUptime.
@@ -184,6 +188,5 @@ function in the Pingdom API to collect information. The function returns a JSON-
 fetchUptime.php subtracts timefrom from timeto where the status is not up to find downtime in seconds for each host, 
 and stores it in Memcached with a cache duration of half a day.
 
-The cached information can be retrieved with the /uptime function in the API, and returns a JSON-body with a to-from 
-timestamp and the downtime in seconds.
+The cached information can be retrieved with the /uptime function in the API.
 
