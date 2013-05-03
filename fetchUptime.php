@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-$login = file('CREDENTIALS_FILE', FILE_IGNORE_NEW_LINES);
+$login = file(CREDENTIALS_FILE, FILE_IGNORE_NEW_LINES);
 $curl = curl_init();
 $m = new \Memcached();
 $m->addServer("localhost",11211);
