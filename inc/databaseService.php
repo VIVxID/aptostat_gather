@@ -4,7 +4,7 @@
 class DatabaseService
 {
 
-    function savePingdom($pingResult)
+    public function savePingdom($pingResult)
     {
 
         if (!is_null($pingResult)) {
@@ -54,7 +54,7 @@ class DatabaseService
         }
     }
 
-    function saveNagios($nagResult)
+    public function saveNagios($nagResult)
     {
 
         if (!is_null($nagResult)) {
@@ -107,7 +107,7 @@ class DatabaseService
         }
     }
 
-    function updatePingdom($pingdom)
+    public function updatePingdom($pingdom)
     {
 
         $found = 0;
@@ -184,7 +184,7 @@ class DatabaseService
         }
     }
 
-    function updateNagios($nagios)
+    public function updateNagios($nagios)
     {
 
         $found = 0;

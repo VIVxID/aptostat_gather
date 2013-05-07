@@ -4,9 +4,9 @@ require_once API_PATH . 'vendor/propel/propel1/runtime/lib/Propel.php';
 Propel::init(API_PATH . "build/conf/aptostat-conf.php");
 set_include_path(API_PATH . "build/classes" . PATH_SEPARATOR . get_include_path());
 
-require "inc/curlService.php";
-require "inc/databaseService.php";
-require "inc/mutexService.php";
+require "inc/CurlService.php";
+require "inc/DatabaseService.php";
+require "inc/MutexService.php";
 
 $dbService = new DatabaseService();
 $curlService = new CurlService();

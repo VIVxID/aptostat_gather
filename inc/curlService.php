@@ -36,7 +36,7 @@ class CurlService
     return $errors;
     }
 
-    function collectNagios($country)
+    public function collectNagios($country)
     {
 
         $curl = curl_init();
