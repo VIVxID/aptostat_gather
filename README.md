@@ -56,9 +56,9 @@ Enter the editor with
 Add the following: (Replace `/path/to` with an actual path)
 
 ```
-    * * * * * cd /path/to/aptostat_gather && php collectReports.php
-    * * * * * cd /path/to/aptostat_gather && php fetchLive.php
-    0 * * * * cd /path/to/aptostat_gather && php fetchUptime.php
+    * * * * * /usr/bin/php -f /path/to/aptostat_gather/collectReports.php >/dev/null 2>&1
+    * * * * * /usr/bin/php -f /path/to/aptostat_gather/fetchLive.php >/dev/null 2>&1
+    0 * * * * /usr/bin/php -f /path/to/aptostat_gather/fetchUptime.php >/dev/null 2>&1
 ```
 
 Running `builder.php` as a crontab is optional. It all depends on how often you plan to add new hosts.
