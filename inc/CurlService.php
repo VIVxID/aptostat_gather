@@ -28,7 +28,7 @@ class CurlService
 
         foreach ($checkList as $check) {
 
-            if ($check["status"]  != "up") {
+            if ($check["status"]  == "confirmed_down") {
 
                     $errors[] = $check;
             }
